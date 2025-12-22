@@ -15,27 +15,58 @@ class Project extends HXProject {
 	static var EXCLUDE_ASSETS:Array<String> = [];
 	static var customDefines:Array<String> = [];
 
+	static var AndroidSettings:Dynamic = {
+		Icons: {
+
+			/**
+				Adaptive icons (Android 8.0+) uses a foreground and background layer to create different shapes
+				Adds support for monochrome icons on Android 12+ too, this depends on how you configured the XML files. 
+			**/
+			Adaptive: true, 
+
+			/**
+				A circular version of the icon for devices that use round icons
+				OPTIONAL if you are using Adaptive icons
+			**/
+			HasRound: false
+		},
+
+		/**
+			Changes the game title to a translatable string (by now).
+			Also, you can add more localized strings support
+		**/
+		LocalizedStrings: true
+	};
+
+	static var WindowsSettings:Dynamic = {
+		CustomVisuals: false // Doesn't work by now
+	}
+
 	public function new() {
 		super();
+
+		this.meta.title		= "Unnamed Sonic Game";
 		
-		this.meta = {
-			title: "Unnamed Sonic Game",
-			
-			/*
-				Format: YEAR.MONTH.DAY.PATCH
-				YEAR.MONTH.DAY: Current date time of the update
-				PATCH: Only for bugfixes
-			*/
-			version: "2025.11.30.0",
-			company: "SunkyDev31",
-			packageName: "game.sunkydev31.asthg"
-		};
+		/*
+			Format: YEAR.MONTH.DAY
+			YEAR, MONTH, DAY: Current datetime of the update
+		*/
+		this.meta.version	= '2025.12.21';
+
+		/*
+			Type of build, not number
+			Format: TEST, RELEASE, PREVIEW
+		*/
+		this.meta.buildNumber	= "TEST";
+		this.meta.company		= "SunkyDev31";
+		this.meta.packageName	= "game.sunkydev.asthg";
 
 		this.app = {
 			file: "ASTHG",
 			main: "Main",
 			preloader: "flixel.system.FlxPreloader",
-			path: "export/" + (isBuildFlag("debug") ? "debug" : isBuildFlag("final") ? "final" : "release")
+			path: "export/" + (isBuildFlag("debug") ? "debug"
+			: isBuildFlag("final") ? "final" : "release")
 		};
 
 
@@ -47,16 +78,18 @@ class Project extends HXProject {
 			this.window.width = 426;
 			this.window.height = 228;
 		}
+
 		this.window.orientation = Orientation.LANDSCAPE;
 		this.window.fps = 60;
-		this.window.background = (isBuildFlag("debug")) ? 0xff00ff : 0x000000;
+		this.window.background = (isBuildFlag("debug")) ? 0xFF00FF : 0x000000;
 		this.window.resizable = (isTarget("web") || isTarget("desktop")) ? true : false;
 
 		if (isTarget("web")) EXCLUDE_ASSETS.push("*.ogg");
 		else EXCLUDE_ASSETS.push("*.mp3");
 
 		echo("");
-		echo('${this.meta.title} v' + this.meta.version + (this.meta.buildNumber != null ? '(${this.meta.buildNumber})' : ""));
+		echo('${this.meta.title} v' + this.meta.version +
+		(this.meta.buildNumber != null ? ' (build ${this.meta.buildNumber})' : ""));
 		echo("-----------------------------------------");
 		dotPad("Company", this.meta.company, 24, false);
 		dotPad("Package", this.meta.packageName, 24, false);
@@ -71,7 +104,7 @@ class Project extends HXProject {
 
 		setFlag(MODS_ALLOWED, false); // Polymod dependencies are breaking so it will be disabled by default
 		setFlag(DISCORD_ALLOWED, isTarget("cpp"));
-		setFlag(TRANSLATIONS_ALLOWED, false);
+		setFlag(TRANSLATIONS_ALLOWED, true);
 		echo("-----------------------------------------", true);
 
 		syncDefines();
@@ -90,13 +123,18 @@ class Project extends HXProject {
 		addHaxelib("polymod", hasFlag(MODS_ALLOWED));
 		addHaxelib("firetongue", true); // Do NOT disable this.
 
+		addHaxelib("haxeui-core");
+		addHaxelib("haxeui-flixel");
+
 		// Android configs
 		if (isAndroid()) {
 			addHaxelib("extension-androidtools");
 	
-			//Change game name to a translatable string
-			config.set("android.application", {"android:label": "@string/app_name"});
-			config.set("android.activity", {"android:label": "@string/app_name"});
+			if (AndroidSettings.LocalizedStrings == true) {
+				//Change game name to a translatable string
+				config.set("android.application", {"android:label": "@string/app_name"});
+				config.set("android.activity", {"android:label": "@string/app_name"});
+			}
 		}
 
 		if (!isBuildFlag("debug")) {
@@ -123,17 +161,17 @@ class Project extends HXProject {
 
 		templatePaths.push("_project/templates");
 		
-		if (isAndroid()) {
+		if (isAndroid() && AndroidSettings.Icons.Adaptive == true) {
 			/*
 				NOTE
-				This icons can be a drawable (VectorDrawable) or an mipmap (Image)
+				This icons can be a drawable (VectorDrawable/"Android SVG") or an mipmap (Image)
 				If you will use mipmaps, check "templates" folder
-
-				Uncomment the second config if you'll use Rounded Icons
 			*/
 
 			config.set("android.activity", {"android:icon": "@drawable/ic_launcher"});
-			//config.set("android.activity", {"android:roundIcon": "@drawable/ic_launcher_round"});
+
+			if (AndroidSettings.Icons.HasRound == true)
+				config.set("android.activity", {"android:roundIcon": "@drawable/ic_launcher_round"});
 		} else {
 			addIcon("icon",		"png",	8,	true);
 			addIcon("icon",		"png",	16,	true);
@@ -141,6 +179,29 @@ class Project extends HXProject {
 		}
 	}
 
+
+	// Platform functions
+
+	function isAndroid() {
+		return (this.target == Platform.ANDROID && this.platformType == PlatformType.MOBILE);
+	}
+
+	function isIOS() {
+		return (this.target == Platform.IOS && this.platformType == PlatformType.MOBILE);
+	}
+
+	function isWindows() {
+		return (this.target == Platform.WINDOWS && this.platformType == PlatformType.DESKTOP);
+	}
+
+	function isLinux() {
+		return (this.target == Platform.LINUX && this.platformType == PlatformType.DESKTOP);
+	}
+
+	function isMacOS() {
+		return (this.target == Platform.MAC && this.platformType == PlatformType.DESKTOP);
+	}
+	
 	/**
 		Gets a bool if the project is runnning on the selected platform
 		@param key Platform target
@@ -149,26 +210,13 @@ class Project extends HXProject {
 		switch ((StringTools.replace(key, ' ', '_')).toLowerCase()) { //Added only the ones this game uses
 			case "cpp", "hl", "neko": return this.targetFlags.exists(key);
 			case "desktop": return this.platformType == PlatformType.DESKTOP;
-			case "ios", "iphone", "ipad": return this.target == Platform.IOS;
-			case "linux": return this.target == Platform.LINUX;
-			case "mac", "macos", "macintoshos", "darwin": return this.target == Platform.MAC;
 			case "mobile": return this.platformType == PlatformType.MOBILE;
 			case "web": return this.platformType == PlatformType.WEB;
 			case "xbox", "xbox1", "xboxone": return this.target == Platform.XBOX1;
 			default:
-				echo("[Project.hxp::isTarget] Unknown value '"+ key +"'");
+				echo("[isTarget] Unknown value '"+ key +"'", true);
 				return false;
 		}
-	}
-
-	// Platform functions
-
-	function isAndroid() {
-		return (this.target == Platform.ANDROID && this.platformType == PlatformType.MOBILE);
-	}
-
-	function isWindows() {
-		return (this.target == Platform.WINDOWS && this.platformType == PlatformType.DESKTOP);
 	}
 
 	function isBuildFlag(key:String) {
@@ -251,7 +299,10 @@ class Project extends HXProject {
 		if (size != null && appendSizeToName) path += Std.string(size);
 		path += '.$format';
 
-		echo('[Icon] Path: $path, Size: $size', true);
+		if (size != null)
+			echo('[Icon] Path: $path, Size: Placeholder', true); // A null size is a placeholder for all sizes
+		else
+			echo('[Icon] Path: $path, Size: $size', true);
 		this.icons.push(new Icon(path, size));
 	}
 

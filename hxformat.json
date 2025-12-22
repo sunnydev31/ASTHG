@@ -1,4 +1,10 @@
 {
+	"indentation": {
+		"character": "tab",
+		"tabWidth": 4,
+		"trailingWhitespace": true
+	},
+
 	"lineEnds": {
 		"leftCurly": "both",
 		"rightCurly": "both",
@@ -6,6 +12,7 @@
 			"leftCurly": "after"
 		}
 	},
+
 	"sameLine": {
 		"ifElse": "next",
 		"doWhile": "next",

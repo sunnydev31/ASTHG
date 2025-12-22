@@ -3,5 +3,6 @@
 	"description": "Adds a portuguese translation of the game",
 	"contributors": [
 		{ "name": "Sunkydev31" }
-	]
+	],
+	"mod_version": "0.0.1"
 }

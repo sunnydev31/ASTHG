@@ -6,7 +6,7 @@
 
 package objects;
 
-class LifeIcon extends FlxSprite {
+class LifeIcon extends AsthgSprite {
 	var charObj:Character;
 	public function new(char:String) {
 		super();

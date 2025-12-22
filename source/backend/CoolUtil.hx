@@ -7,117 +7,6 @@ import lime.utils.Assets as LimeAssets;
 
 class CoolUtil
 {
-	inline public static function quantize(f:Float, snap:Float) {
-		// changed so this actually works lol
-		var m:Float = Math.fround(f * snap);
-		//trace(snap);
-		return (m / snap);
-	}
-
-	inline public static function capitalize(text:String)
-		return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
-
-	/**
-		Checks if `string` is `null` or empty
-
-		@param string The string to check
-	**/
-	inline public static function isNullString(string:String):Bool {
-		if (string != null || string != "") {
-			return false;
-		}
-
-		trace('[isNullString] String \'$string\' is Null or Empty!');
-		return true;
-	}
-
-	inline public static function coolTextFile(path:String):Array<String> {
-		var daList:String = null;
-
-		if (Paths.fileExists(path, TEXT)) daList = Paths.getContent(path);
-		trace('[coolTextFile] Path: $path | Exists: ${Paths.fileExists(path, TEXT)}');
-
-		return daList != null ? listFromString(daList) : [];
-	}
-
-	public static function coolText(path:String):Array<String> {
-		var daList:Array<String> = Assets.getText(path).trim().split('\n');
-	
-		for (i in 0...daList.length)
-			daList[i] = daList[i].trim();
-	
-		return daList;
-	}
-
-	inline public static function colorFromString(color:String):FlxColor {
-		var hideChars = ~/[\t\n\r]/;
-		var color:String = hideChars.split(color).join('').trim();
-		if(color.startsWith('0x')) color = color.substring(color.length - 6);
-
-		var colorNum:Null<FlxColor> = FlxColor.fromString(color);
-		if(colorNum == null) colorNum = FlxColor.fromString('#$color');
-		return colorNum != null ? colorNum : FlxColor.WHITE;
-	}
-
-	inline public static function listFromString(string:String):Array<String> {
-		var daList:Array<String> = [];
-		daList = string.trim().split('\n');
-
-		for (i in 0...daList.length)
-			daList[i] = daList[i].trim();
-
-		return daList;
-	}
-
-	public static function floorDecimal(value:Float, decimals:Int):Float {
-		if(decimals < 1)
-			return Math.floor(value);
-
-		var tempMult:Float = 1;
-		for (i in 0...decimals)
-			tempMult *= 10;
-
-		var newValue:Float = Math.floor(value * tempMult);
-		return newValue / tempMult;
-	}
-
-	inline public static function numberArray(max:Int, ?min = 0):Array<Int> {
-		var dumbArray:Array<Int> = [];
-		for (i in min...max) dumbArray.push(i);
-
-		return dumbArray;
-	}
-
-	inline public static function browserLoad(site:String) {
-		#if linux
-		Sys.command('/usr/bin/xdg-open', [site]);
-		#else
-		FlxG.openURL(site);
-		#end
-	}
-
-	inline public static function openFolder(folder:String, absolute:Bool = false) {
-		#if sys
-			if(!absolute) folder =  Sys.getCwd() + folder;
-
-			folder = folder.replace('/', '\\');
-			if(folder.endsWith('/')) folder.substr(0, folder.length - 1);
-
-			#if linux
-			var command:String = '/usr/bin/xdg-open';
-			#elseif windows
-			var command:String = 'explorer.exe';
-			#end
-
-			#if (windows || linux)
-			Sys.command(command, [folder]);
-			trace('$command $folder');
-			#end
-		#else
-			FlxG.log.error("Platform is not supported for CoolUtil.openFolder");
-		#end
-	}
-
 	/**
 		Helper Function to Fix Save Files for Flixel 5
 
@@ -160,10 +49,6 @@ class CoolUtil
 	**/
 	inline public static function playSound(sound:String, ?loop:Bool = false, ?volume:Float = 1.0) {
 		FlxG.sound.play(Paths.sound(sound), volume, loop);
-	}
-
-	public static function makeBGGradient(colors:Array<FlxColor>, chuncks:UInt, angle:Int, interp:Bool):FlxSprite {
-		return FlxGradient.createGradientFlxSprite(FlxG.width, FlxG.height, colors, chuncks, angle, interp);
 	}
 
 	/**
@@ -227,18 +112,5 @@ class CoolUtil
 
 		FlxG.sound.music.play();
     }
-
-	/**
-		Switches a global color into a custom color
-		@param sprite Sprite to apply the palette
-		@param pal The colors to replace in order, Must match the length of the for-loop on the function
-
-		Note that the character must be added or loaded to work
-	**/
-	public static function applyPalette(sprite:FlxSprite, pal:Array<FlxColor>) {
-		for (i in 0...Constants.PALETTE_OVERRIDE.length) {
-			sprite.replaceColor(Constants.PALETTE_OVERRIDE[i], pal[i]);
-		}
-	}
 }
 

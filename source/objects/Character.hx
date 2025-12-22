@@ -13,7 +13,7 @@ import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxFrame;
 import haxe.xml.Access;
 
-class Character extends FlxSprite {
+class Character extends AsthgSprite {
 	public static final defaultPlayer:String = "sonic";
 	public var json:CharacterData;
 	public static var exAnim:Dynamic = {}; // Data store for new animations
@@ -103,22 +103,22 @@ class Character extends FlxSprite {
 }
 
 typedef AnimData = {
-	var name:String;
-	var sheets:String;
+	name:String,
+	sheets:String,
 
 	/**
 		Name in SparrowAtlas file
 	**/
-	@:optional var prefix:String;
+	?prefix:String,
 
-	@:optional var fps:Float;
-	@:optional var loop:Bool;
+	?fps:Float,
+	?loop:Bool,
 
 	/**
 		Offset on character
 	**/
-	@:optional var offset:Array<Int>;
-	@:optional var indices:Array<Int>;
+	?offset:Array<Int>,
+	?indices:Array<Int>
 
 }
 
@@ -127,24 +127,24 @@ typedef CharacterData = {
 		Name of this character
 		Used on IDs, and for results text
 	**/
-	var name:String;
-	@:optional var liveIcon:String;
+	name:String,
+	?liveIcon:String,
 
 	/**
 		Color that this character uses
 		
 		Used for Normal palette showing, super, etc.
 	**/
-	var palettes:Array<Array<String>>;
+	palettes:Array<Array<String>>,
 
 	/**
 		Some characters doesn't achieve Super forms, so there you are!
 		NOTE: If set to `true`, the live icon needs to have 2 frames!
 	**/
-	var hasSuper:Bool;
+	hasSuper:Bool,
 
-	@:optional var animations:Array<AnimData>;
-	@:optional var extraAnimations:Array<AnimData>;
+	animations:Array<AnimData>,
+	extraAnimations:Array<AnimData>
 }
 
 

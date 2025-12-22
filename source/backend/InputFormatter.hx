@@ -56,7 +56,7 @@ class InputFormatter {
 				if(label.toLowerCase() == 'null') return '---';
 
 				var arr:Array<String> = label.split('_');
-				for (i in 0...arr.length) arr[i] = CoolUtil.capitalize(arr[i]);
+				for (i in 0...arr.length) arr[i] = StringUtil.capitalize(arr[i]);
 				return arr.join(' ');
 		}
 	}
@@ -170,7 +170,7 @@ class InputFormatter {
 				if(label.toLowerCase() == 'null') return '---';
 
 				var arr:Array<String> = label.split('_');
-				for (i in 0...arr.length) arr[i] = CoolUtil.capitalize(arr[i]);
+				for (i in 0...arr.length) arr[i] = StringUtil.capitalize(arr[i]);
 				return arr.join(' ');
 		}
 	}

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <data>
 	<file id="data"			value="data.tsv"/>
+	<file id="data"			value="culture.tsv"/>
 	<file id="discord"		value="discord.tsv"/>
 	<file id="input"		value="input.tsv"/>
 	<file id="main_menu"	value="main_menu.tsv"/>
+	<file id="editor_menu"	value="editor_menu.tsv"/>
 	<file id="options"		value="option_controls.tsv"/>
 	<file id="options"		value="option_display.tsv"/>
 	<file id="options"		value="option_gameplay.tsv"/>

@@ -18,15 +18,12 @@ import openfl.utils.Assets as OpenFlAssets;
 @:access(openfl.display.BitmapData)
 class Paths
 {
-	inline public static var SOUND_EXT = #if (web || flash) "mp3" #else "ogg" #end;
-	inline public static var VIDEO_EXT = #if (web || flash) "mp4" #else "ogv" #end;
-
 	public static function excludeAsset(key:String) {
 		if (!dumpExclusions.contains(key))
 			dumpExclusions.push(key);
 	}
 
-	public static var dumpExclusions:Array<String> = ['assets/shared/music/MainMenu.$SOUND_EXT'];
+	public static var dumpExclusions:Array<String> = ['assets/shared/music/MainMenu.${Constants.SOUND_EXT}'];
 	// haya I love you for the base cache dump I took to the max
 	public static function clearUnusedMemory() {
 		// clear non local assets in the tracked assets list
@@ -71,9 +68,7 @@ class Paths
 			try {
 				var grp:Array<Dynamic> = Reflect.getProperty(spr, 'members');
 				if(grp != null) {
-					//trace('is actually a group');
-					for (member in grp)
-					{
+					for (member in grp) {
 						checkForGraphics(member);
 					}
 					return;
@@ -123,7 +118,7 @@ class Paths
 		currentLevel = name.toLowerCase();
 	}
 
-	public static function getPath(file:String, ?type:AssetType = TEXT, ?parentfolder:String = null, ?modsAllowed:Bool = true):String {
+	public static function getPath(file:String, ?type:AssetType = TEXT, ?parentfolder:String = null):String {
 		if (parentfolder != null && parentfolder != "" && parentfolder != "shared") {
 			return getFolderPath(file, parentfolder);
 		}
@@ -145,16 +140,17 @@ class Paths
 	}
 
 	inline static public function video(key:String) {
-		return getPath('videos/$key.$VIDEO_EXT');
+		return getPath('videos/$key.${Constants.VIDEO_EXT}');
+	}
+
+	inline static public function sound(key:String):Sound {
+		return returnSound('sounds/$key');
 	}
 
 	inline static public function soundRandom(key:String, min:Int, max:Int) {
 		return sound(key + FlxG.random.int(min, max));
 	}
 
-	inline static public function sound(key:String):Sound {
-		return returnSound('sounds/$key');
-	}
 
 	inline static public function music(key:String):Sound {
 		return returnSound('music/$key');
@@ -166,10 +162,10 @@ class Paths
 		@param key Name of the image (e.g. funkay)
 		@param parentFolder Use another folder? (Default: Shared)
 		@param allowGPU Cache on GPU? (Default: True)
-		@return openfl.display.BitmapData
+		@return FlxGraphic
 	**/
 	static public function image(key:String, ?parentFolder:String = null, ?allowGPU:Bool = true):FlxGraphic {
-		key = Locale.getFile('images/$key') + '.png';
+		key = Locale.getFile('images/$key', 'png');
 		var bitmap:BitmapData = null;
 		if (currentTrackedAssets.exists(key)) {
 			localTrackedAssets.push(key);
@@ -180,7 +176,7 @@ class Paths
 
 	public static function cacheBitmap(key:String, ?parentFolder:String = null, ?bitmap:BitmapData, ?allowGPU:Bool = true):FlxGraphic {
 		if (bitmap == null) {
-			var file:String = getPath(key, IMAGE, parentFolder, true);
+			var file:String = getPath(key, IMAGE, parentFolder);
 			
 			if (OpenFlAssets.exists(file, IMAGE))
 				bitmap = OpenFlAssets.getBitmapData(file);
@@ -229,14 +225,12 @@ class Paths
 
 	inline static public function getSparrowAtlas(key:String, ?parentFolder:String = null, ?allowGPU:Bool = true):FlxAtlasFrames {
 		var imageLoaded:FlxGraphic = image(key, parentFolder, allowGPU);
-		
-		return FlxAtlasFrames.fromSparrow(imageLoaded, getPath(Locale.getFile('images/$key') + '.xml', TEXT, parentFolder));
-
+		return FlxAtlasFrames.fromSparrow(imageLoaded, getPath(Locale.getFile('images/$key', 'xml'), TEXT, parentFolder));
 	}
 
 	public static var currentTrackedSounds:Map<String, Sound> = [];
 	public static function returnSound(key:String, ?path:String, ?beepOnNull:Bool = true) {
-		var file:String = getPath(Locale.getFile(key) + '.$SOUND_EXT', SOUND, path);
+		var file:String = getPath(Locale.getFile(key, Constants.SOUND_EXT), SOUND, path);
 
 		//trace('precaching sound: $file');
 		if(!currentTrackedSounds.exists(file))
@@ -254,30 +248,23 @@ class Paths
 		return currentTrackedSounds.get(file);
 	}
 
-	inline public static function fileExists(key:String, type:AssetType, ?library:String = null, ?ignoreMods:Bool = false) {
-		var path = getPath(key, type, library, !ignoreMods);
+	inline public static function fileExists(key:String, type:AssetType, ?library:String = null):Bool {
+		var path = getPath(key, type, library);
 		
 		if(OpenFlAssets.exists(path, type)) {
 			return true;
-		} else {
-			trace('[fileExists::OpenFL] File doesn\'t exists: $key | path: $path');
-			return false;
 		}
+
+		trace('[fileExists::OpenFL] File doesn\'t exists: $key | path: $path');
+		return false;
 	}
 	
-	inline static public function getContent(key:String, ?ignoreMods:Bool = false) {
-		var path:String = getPath(key, TEXT, !ignoreMods);
-		#if sys
-		if (FileSystem.exists(path)) return File.getContent(path); else {
-			trace('[getContent] Cannot get the content of "$key" | Path: "$path" | Tried FileSystem');
-			return null;
-		}
-		#else
+	inline static public function getContent(key:String) {
+		var path:String = getPath(key, TEXT);
 		if (OpenFlAssets.exists(path, TEXT)) return Assets.getText(path); else {
-			trace('[getContent] Cannot get the content of "$key" | Path: "$path" | Tried OpenFL Assets');
+			trace('[getContent] Cannot get the content of "$key" | Path: "$path"');
 			return null;
 		}
-		#end
 	}
 
 	/**
@@ -290,7 +277,7 @@ class Paths
 		trace('[parseJson] Path: $path.json | Using TJSON.');
 		return tjson.TJSON.parse(getContent('$path.json'));
 		#else
-		trace('[parseJson] Path: $path.json | Using haxe.Json.');
+		trace('[parseJson] Path: $path.json | Using "haxe.Json".');
 		return haxe.Json.parse(getContent('$path.json'));
 		#end
 	}

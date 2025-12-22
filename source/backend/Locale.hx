@@ -1,12 +1,16 @@
 package backend;
+
+import firetongue.FireTongue;
+
 /**
- * Handler for translating text and assets in the game
- * 
- * ### Functions
- * `getString`, `getFile`
+	Handler for translating text and assets in the game
+
+	### Functions
+	`getString`, `getFile`
  */
 class Locale
 {
+
 	/**
 		Gets an translation phrase
 		@param key String key on files
@@ -28,13 +32,18 @@ class Locale
 	/**
 		Gets a translatable file, More optimized for file loading
 		@param key Default file path
+		@param extension File extension to add ("txt", "png"...), "." will be added automatically
 		@return String
 		@authorTip Sunkydev31
 	**/
-	inline public static function getFile(key:String) {
+	inline public static function getFile(key:String, ?extension:String = "") {
 		var str:String = Main.tongue.get(key.trim(), "files");
-		if (!CoolUtil.isNullString(str)) key = str;
-		return key;
+		if (!StringUtil.isNull(str)) key = str;
+
+		if (!StringUtil.isNull(extension))
+			return key + "." + extension;
+		else
+			return key;
 	}
 
 	inline static private function formatKey(key:String) {

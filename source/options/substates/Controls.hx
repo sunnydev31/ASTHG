@@ -19,12 +19,9 @@ enum abstract DeviceType(Int) {
 class Controls extends SubStateManager {
 	var currentDevice:DeviceType = DeviceType.KEYBOARD;
 
-	/**Move Left
-	 * List of keybinds
-	 * 
-	 * Column 1: Keybind ID,
-	 * Cmlumn 2: Name in the menu 
-	 */
+	/**
+		List of keybinds
+	**/
 	var controlList:Array<String> = [
 		'up', 'left', 'down', 'right',
 		'auxiliar', 'jump', 'accept', 'back',
@@ -50,10 +47,9 @@ class Controls extends SubStateManager {
 		
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		bg.alpha = 0.6;
-		bg.updateHitbox();
 		add(bg);
 		
-		var title:FlxBitmapText = new FlxBitmapText(FlxG.width/2, 8, Locale.getString("options_controls", "options"), Paths.getAngelCodeFont("Roco"));
+		var title:FlxBitmapText = new FlxBitmapText(FlxG.width/2, 8, Locale.getString("title_controls", "options"), Paths.getAngelCodeFont("Roco"));
 		title.x -= title.width/2;
 		add(title);
 

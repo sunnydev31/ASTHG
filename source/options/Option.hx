@@ -8,7 +8,8 @@ enum OptionType {
 }
 
 class Option {
-	public var name:Null<String> = "unknown_option";
+	public var flag:Null<String> = "Unknown Option";
+	public var desc:Null<String> = "This option does not have a description.";
 	public var type:OptionType = OptionType.BOOL;
 	public var saveVar(default, null):String = null;
 	public var options:Dynamic = null;
@@ -18,12 +19,11 @@ class Option {
 	public var child:FlxText;
 	public var text(get, set):String;
 
-	inline public function new(name:String = "", saveVar:String = "", ?type:OptionType = OptionType.BOOL, ?options:Dynamic) {
-		_name = name;
-		_translationKey = _name;
+	inline public function new(flag:String = "", saveVar:String = "", ?type:OptionType = OptionType.BOOL, ?options:Dynamic) {
+		_name = flag;
 
-		this.name = Locale.getString(name, "options");
-		this.desc = Locale.getString('${name}_desc', "options");
+		this.flag = Locale.getString(flag, "options");
+		this.desc = Locale.getString('${flag}_desc', "options");
 		this.type = type;
 		this.saveVar = saveVar;
 		this.options = options;
@@ -53,7 +53,6 @@ class Option {
 
 	var _name:String = null;
 	var _text:String = null;
-	var _translationKey:String = null;
 
 	private function get_text()
 		return _text;
@@ -63,9 +62,40 @@ class Option {
 		if (child != null)
 		{
 			_text = newValue;
-			child.text = Locale.getString('$_translationKey-${value}', _text);
+			child.text = Locale.getString('$_name-${value}', _text);
 			return _text;
 		}
 		return null;
 	}
+}
+
+typedef OptionSettings = {
+	/**
+		Set's a display format, how the option will look	
+		Default: `%v` 
+	**/
+	display:String,
+
+	/**
+		Minimal value for this `INT`/`FLOAT` option	
+		Default: `0.0`
+	**/
+	min:Float,
+
+	/**
+		Maximum value for this `INT`/`FLOAT` option	
+		Default: `10.0`
+	**/
+	max:Float,
+
+	/**
+		How much increase/decrease values when changing `INT`/`FLOAT` options
+	**/
+	amount:Float,
+
+	/**
+		Only available for `STRING` options.
+		Set's a list of values for this option.
+	**/
+	list:Array<String>
 }

@@ -1,5 +1,6 @@
 package options.substates;
 
+import firetongue.FireTongue;
 import openfl.utils.Assets;
 
 class Language extends SubStateManager {
@@ -19,8 +20,9 @@ class Language extends SubStateManager {
 		languages = Main.tongue.locales;
 		for (num => str in languages) {
 			// LanguageRegionNative breaks and I don't know why
-			var text:FlxText = new FlxText(0, 300, 0, Main.tongue.getIndexString(LanguageNative, languages[num]) + " (" + Main.tongue.getIndexString(RegionNative, languages[num]) + ")");
-			text.setFormat(Paths.font("Mania.ttf"), 16, FlxColor.WHITE, CENTER);
+			var LangRegionNative = Main.tongue.getIndexString(LanguageNative, languages[num]) + " (" + Main.tongue.getIndexString(RegionNative, languages[num]) + ")";
+			var text:AsthgText = AsthgText.create(0, 300, LangRegionNative);
+			text.format(16, "center", FlxColor.WHITE);
 			text.ID = num;
 			if (languages.length < 7) {
 				text.screenCenter(Y);

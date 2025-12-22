@@ -24,10 +24,10 @@ class MainMenu extends StateManager {
 		DiscordClient.changePresence(Locale.getString('main_menu', 'discord'), null);
 		#end
 
-		var bg:FlxSprite = CoolUtil.makeBGGradient([0xFF793BFF, 0xFF95EDFF], 4, 32, false);
+		var bg:FlxSprite = AsthgSprite.createGradient(FlxG.width, FlxG.height, [0xFF793BFF, 0xFF95EDFF], 4, 32, false);
 		add(bg);
 
-		var bgLayer:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		var bgLayer:AsthgSprite = new AsthgSprite().createGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		bgLayer.alpha = ClientPrefs.data.backLayers;
 		add(bgLayer);
 
@@ -38,18 +38,19 @@ class MainMenu extends StateManager {
 		backd.velocity.set(-30, 0);
 		add(backd);
 		
-		var backdFill:FlxSprite = new FlxSprite().makeGraphic(1, 1, backd.color);
-		backdFill.scale.set(FlxG.width, Math.floor(backd.y));
-		backdFill.updateHitbox();
+		var backdFill:AsthgSprite = new AsthgSprite().createGraphic(FlxG.width, Math.floor(backd.y), backd.color);
 		add(backdFill);
 
 		var titleTxt:FlxBitmapText = new FlxBitmapText(0, 2, Locale.getString("title", "main_menu"), Paths.getAngelCodeFont("HUD"));
 		
-		var titleSpr = FlxScrollingText.add(titleTxt, new openfl.geom.Rectangle(60, titleTxt.y, FlxG.width, titleTxt.height), 2, 0, titleTxt.text);
+		var titleSpr = FlxScrollingText.add(titleTxt, new openfl.geom.Rectangle(0, titleTxt.y, FlxG.width, titleTxt.height), 2, 0, titleTxt.text);
 		add(titleSpr);
 		FlxScrollingText.startScrolling(titleSpr);
 
-		var version:FlxBitmapText = new FlxBitmapText(0, 0, "v" + Std.string(CoolUtil.getProjectInfo('version')), FlxBitmapFont.fromMonospace(Paths.getFolderPath("AbsoluteSystem.png", "fonts"), Constants.ABSOLUTE_FONT_GLYPHDATA, FlxPoint.get(8, 8)));
+		var version:FlxBitmapText = new FlxBitmapText(0, 0, "v" + CoolUtil.getProjectInfo('version'), FlxBitmapFont.fromMonospace(Paths.getFolderPath("AbsoluteSystem.png", "fonts"), Constants.ABSOLUTE_FONT_GLYPHDATA, FlxPoint.get(8, 8)));
+		if (!StringUtil.isNull(CoolUtil.getProjectInfo("buildNumber"))) {
+			version.text += " " + CoolUtil.getProjectInfo("buildNumber");
+		}
 		version.setPosition(FlxG.width - version.width - 7, FlxG.height - version.height - 2);
 		add(version);
 
@@ -58,6 +59,7 @@ class MainMenu extends StateManager {
 
 		for (num => str in options) {
 			var menu:FlxBitmapText = new FlxBitmapText(10, 30, Locale.getString(str, "main_menu"), Paths.getAngelCodeFont("HUD"));
+			menu.x += (32 * num);
 			menu.y += (18 * num);
 			menu.ID = num;
 			group.add(menu);
@@ -113,6 +115,10 @@ class MainMenu extends StateManager {
 					}
 				});
 			}
+		}
+
+		if (FlxG.keys.justPressed.SEVEN) {
+			StateManager.switchState(new states.editor.MainMenuEdt());
 		}
 		super.update(elapsed);
 	}

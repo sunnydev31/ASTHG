@@ -97,7 +97,7 @@ class PlayState extends StateManager
 		timeTxt.x -= (timeTxt.width);
 		uiGroup.add(timeTxt);
 
-		ringsTxt = new FlxBitmapText(hudTxtRings.x + hudTxtRings.width + 37, hudTxtRings.y + 32, '', Paths.getAngelCodeFont("HUD"));
+		ringsTxt = new FlxBitmapText(hudTxtRings.x + hudTxtRings.width + 37, hudTxtRings.y + 16, '', Paths.getAngelCodeFont("HUD"));
 		ringsTxt.scrollFactor.set();
 		ringsTxt.x -= (ringsTxt.width);
 		ringsTxt.x = timeTxt.x = scoreTxt.x;
@@ -106,7 +106,7 @@ class PlayState extends StateManager
 		livesIcon = new LifeIcon(player.lifeIcon);
 		livesIcon.x = hudPos.x;
 		livesIcon.y = FlxG.height - 26;
-		CoolUtil.applyPalette(livesIcon, [
+		livesIcon.applyPalette([
 			FlxColor.fromString(player.json.palettes[player.curPalette][0]),
 			FlxColor.fromString(player.json.palettes[player.curPalette][1]),
 			FlxColor.fromString(player.json.palettes[player.curPalette][2]),
@@ -138,11 +138,8 @@ class PlayState extends StateManager
 	}
 
 	override public function update(elapsed:Float) {
-		if (rings > 999) rings = 999;
-		else if (rings < 0) rings = 0;
-
-		if (lives > 99) lives = 99;
-		else if (lives < 0) lives = 0;
+		rings = Std.int(FlxMath.wrap(rings, 0, 999));
+		lives = Std.int(FlxMath.wrap(lives, 0, 99));
 
 		scoreTxt.text = Std.string(score * 10);
 		timeTxt.text = Std.string(time);
@@ -159,6 +156,11 @@ class PlayState extends StateManager
 			CoolUtil.playSound("Ring", true);
 		}
 
+		if (FlxG.keys.justPressed.EIGHT) {
+			player.isSuper = true;
+			player.curPalette++;
+		}
+
 		
 		updateMoves();
 		super.update(elapsed);
@@ -167,7 +169,9 @@ class PlayState extends StateManager
 	}
 
 	function openPauseMenu() {
-		if (FlxG.sound.music != null) FlxG.sound.music.pause();
+		if (FlxG.sound.music != null) {
+			FlxG.sound.music.pause();
+		}
 
 		openSubState(new substates.Pause());
 	}

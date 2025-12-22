@@ -1,6 +1,5 @@
-"flag	content
-
-"keybind_change	Pressione uma tecla<N><N><1>: Cancelar<N><2>: Deletar
+flag	content
+keybind_change	Pressione uma tecla<N><N><1>: Cancelar<N><2>: Deletar
 keybind_change_gamepad	Pressione um botão<N><N><1>: Cancelar<N><2>: Deletar
 keybind_tab	Pressione <1> para trocar de seção
 keybind_tab_gamepad	Pressione <1>/<2> para trocar de seção
@@ -18,4 +17,4 @@ key_pause	Pausar
 key_auxiliar	Auxiliar
 key_volume_up	Aumentar Volume
 key_volume_down	Diminuir Volume
-key_volume_mute	Silenciar"
+key_volume_mute	Silenciar

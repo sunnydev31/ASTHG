@@ -2,109 +2,103 @@
 
 ## Introduction
 
-Language files (.lang) are a special resource, you can replace text and even files without touching the source code.<br>
-If you're adding new phrases, make sure the first line matches the original, that's how the game knows it's the same language.<br>
-Note that doesn't applies for the default one!
+So, planning to translate the game? That’s great! Translation with `firetongue` is powerful — you can not only translate texts and use different fonts, but also swap files if needed.
 
-## Phrases
+## How to Use
 
- You probably will see something like this:
+FireTongue works with `CSV` (Comma Separated Values) and the more common `TSV` (Tab Separated Values). Their syntax looks like this:
 
- ```text
- score_text: "Score: {1}"
- ```
+TSV:
+```tsv
+flag	content
+MY_TEXT	This is my text.
+```
 
-This is a translatable text (internally named: phrase), with support of phrase replacements<br>
-To use on your code, use this function:
+CSV:
+```csv
+"flag","content"
+"MY_TEXT","This is my text."
+```
 
+Before adding any file, you need to edit [index.xml](../../../assets/locales/index.xml). This is the main file where you define how many languages the game supports, notes, which files to use, etc. Basically, it’s the core of the localization system.
+
+Syntax of `index.xml`:
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+
+	<!-- Adds a translation file -->
+	<file id="my_context" value="my_file.tsv"/>
+
+	<file id="fonts" value="my_fonts.xml"/>
+
+	<locale id="en-US" is_default="true" sort="0">	
+		<contributors value="Sunkydev31"/>
+		<ui language="Language" region="Region"/>
+		<label id="en-US" language="English" region="United States"/>
+	</locale>
+</data>
+```
+
+- `file`
+  - `id`: Context, in case the same `flag` appears in multiple files.
+  - `value`: Name and location of the file.
+- `locale`
+  - `id`: Language code, based on ISO (e.g., en-US).
+  - `is_default`: Defines if this language is the default one.
+  - `sort`: Index in the language list.
+- `contributors`: List of translators.
+- `ui`
+  - `language`: Word “language” in the current language.
+  - `region`: Word “region” in the current language.
+- `label`
+  - `id`: Language code shown in the localized list.
+  - `language`: Localized name of the language.
+  - `region`: Localized name of the region.
+
+## Formatting
+
+Some text formatting like `\n` for line breaks won’t work here. You need to use FireTongue’s own formatters:
+
+| Formatter | In FireTongue | Description       |
+|:---------:|:-------------:|:-----------------:|
+| `\n`      | `<N>`         | Line Break        |
+| `\t`      | `<T>`         | Tabulation        |
+| `,`       | `<C>`         | Comma             |
+| `"`       | `<Q>`         | Quote             |
+| “         | `<LQ>`        | Fancy Left Quote  |
+| ”         | `<RQ>`        | Fancy Right Quote |
+
+This implementation prevents parsing errors and ensures texts display correctly.
+
+## Translating
+
+When translating, the identifier (`flag`) must be lowercase, without spaces (use `_` instead), and avoid special characters like: `~ & \ / ; : < > # . , ' " % ? !`
+
+Use this code:
 ```haxe
-getString(key:String, ?defaultPhrase:String, values:Array<Dynamic> = null):String
+Locale.getString(flag:String, context:String, values:Array<Dynamic>):String
 ```
+- `flag`: Identifier used in translation files.
+- `context`: `id` defined in [index.xml](../../../assets/locales/index.xml).
+- `values`: Replaces any placeholder `<1>`, `<2>`… in ascending order.
 
-- `key`: The phrase key to find on `.lang` files, any disallowed symbol will be removed, and spaces will be replaced with underscores;
+## Replacing Texts
 
-- `defaultPhrase`: (Optional) The phrase in the DEFAULT language ("en-US" by default);
-  - If this is null, the game will treat the `key` as both the lookup `key` and the `defaultPhrase`;
+As seen earlier, placeholders are `<NUM>` where `NUM` is the index of the value to replace.
 
-- `values`: Replaces any placeholder following the index on the text, [see about placeholders here](#substitution).
+They only work if `values` is not empty or `null`. Otherwise, they will appear unchanged.
 
-### Rules
+## Replacing Files and Fonts
 
-- A phrase must have double quotes (") around it: `"this is a string!"`
-  - You don't need to use escapements for internal quotes! It doesn't cause parse errors
+Replacing fonts and files hasn’t been fully tested yet, but it can still be used.
 
-- A key (identifier) must not have spaces, only underscores: `this_is_a_key`
-  - The key also must have a colon on the end (`this_is_a_key:`), then, the string followed by quotes (`"`), colons act as a "split key".
-
-- A key doesn't allows:
-
-|Key                            |Reason                                     |
-|-------------------------------|-------------------------------------------|
-|~ . , & \ / # ' " : ; % < > ? !|Breaks parsing and the key will be ignored.|
-
-**Note**: Some of this rules doesn't applies for file paths!
-
-## Substitution
-
-  You use `{n}` for placeholders, replace `n` with the substitution index on your code
-
-### Subtstitution Rules
-
-- Placeholders start at 1, never in 0;
-- Placeholders can be used in any order;
-- You can use the same placeholder on your file multiple times;
-
-## Comments
-
-You can use `//` to add comments in your `.lang` file.
-Any line that starts with `//` will be ignored by the game — perfect for notes, reminders, or explanations.
-
-- Comments must be on their own line — don’t mix them with keys or phrases.
-- You can leave notes for translators, modders, or even yourself. Just don’t forget to remove them if you’re publishing your mod!
-
-## Examples
-
-### Commom Phrase
-
-```text
-common_string: "This is a text"
-quoted_string: "This is a "quoted" text"
-```
-
-### Commented phrase
-
-```text
-// This is the English translation file
-// Make sure to keep placeholders like {1} intact!
-
-menu_start: "Start Game"
-```
-
-#### Files
-
-```text
-path/to/file.png: "path/to/replacement file.png"
-```
-
-#### Placeholders
-
-```text
-placeholder_text: "C: {1}, D: {2}"
-```
-
-- Code:
-
+To replace files, use the code below
 ```haxe
-Locale.getString("placeholder_text", "A: {1}, B: {2}", ["My text", "My other text"]);
+Locale.getFile(key:String, ?extension:String = ““):String
 ```
 
-#### File Structure
-
-```text
-English (US)
-
-// Comment
-common_string: "This is a text"
-quoted_string: "This is a "quoted" text"
-path/to/file: "path/to/your replacement file"
-```
+### Code parameters
+ - `key`: Path to file (e.g. “images/myImage”)
+ - `extension`: (OPTIONAL) File extension (e.g. “png“, “txt“)
+    - this adds a period (“.”) automatically 

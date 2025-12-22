@@ -34,7 +34,7 @@ class Pause extends SubStateManager {
 		add(backd);
 
 		var fillWidth = FlxG.width - (backd.x + backd.width);
-		var backdFill:FlxSprite = new FlxSprite(backd.x + backd.width, 0).makeGraphic(Std.int(fillWidth), FlxG.height, backd.color);
+		var backdFill:AsthgSprite = new AsthgSprite(backd.x + backd.width, 0).createGraphic(Std.int(fillWidth), FlxG.height, backd.color);
 		add(backdFill);
 
 		grpOptions = new FlxTypedGroup<FlxText>();
@@ -96,8 +96,9 @@ class Pause extends SubStateManager {
 		}
 
 		for (num => str in options) {
-			var item:FlxText = new FlxText(backd.x + 67, 60, 0, Locale.getString(str, "pause").toUpperCase());
-			item.setFormat(Paths.font("Mania.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.SHADOW, 0xFF404040);
+			var item:AsthgText = AsthgText.create(backd.x + 67, 60, Locale.getString(str, "pause").toUpperCase());
+			item.format(16, "center", FlxColor.WHITE);
+			item.formatBorder(SHADOW_XY(3,1), 0xFF404040);
 			item.y += (30 * (num - (options.length / 2))) + item.size;
 			item.x -= (item.width/2);
 			item.ID = num;

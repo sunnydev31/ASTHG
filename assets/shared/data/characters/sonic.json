@@ -1,6 +1,4 @@
 {
-	// Testing!
-
 	"name": "Sonic",
 	"hasSuper": true,
 	"continues": {
@@ -35,46 +33,46 @@
 		{
 			"name": "ANI_STOPPED",
 			"loop": false,
-			"offsets":  [0, 0]
+			"offsets": [0, 0]
 		},
 		{
 			"name": "ANI_CONTINUE_UP",
 			"loop": true,
 			"fps": 60,
-			"offsets":  [0, 0],
+			"offsets": [0, 0],
 			"indices": [0]
 		},
 		{
 			"name": "ANI_CONTINUE_UP-loop",
 			"loop": true,
 			"fps": 60,
-			"offsets":  [0, 0],
+			"offsets": [0, 0],
 			"indices": [1, 2]
 		},
 		{
 			"name": "ANI_SUPER_TRANSFORM",
 			"loop": true,
 			"fps": 60,
-			"offsets":  [0, 0],
+			"offsets": [0, 0],
 			"indices": [0, 1, 2, 3]
 		},
 		{
 			"name": "ANI_SUPER_TRANSFORM-loop",
 			"loop": true,
 			"fps": 80,
-			"offsets":  [0, 0],
+			"offsets": [0, 0],
 			"indices": [4, 5, 6]
 		},
 		{
 			"name": "ANI_CD_TWIRL",
 			"loop": true,
 			"fps": 60,
-			"offsets":  [0, 0]
+			"offsets": [0, 0]
 		},
 		{
 			"name": "ANI_HANG_MOVE",
 			"loop": false,
-			"offsets":  [0, 0]
+			"offsets": [0, 0]
 		}
 	],
 

@@ -132,7 +132,7 @@ class SaveEntry extends FlxSpriteGroup {
 	public function new(id:Int) {
 		super();
 
-		var save:FlxSprite = new FlxSprite().loadGraphic(Paths.image("saveSelect/save", null, false));
+		var save:AsthgSprite = AsthgSprite.create("saveSelect/save");
 		add(save);
 
 		var colors:Array<Array<FlxColor>> = [
@@ -146,10 +146,10 @@ class SaveEntry extends FlxSpriteGroup {
 		];
 
 		for (i in 0...7) {
-			var emerald:FlxSprite = new FlxSprite(2, save.height - 12).loadGraphic(Paths.image("saveSelect/emerald"));
+			var emerald:AsthgSprite = AsthgSprite.create(2, save.height - 12, "saveSelect/emerald");
 			emerald.x += (emerald.width * i) + i;
-			CoolUtil.applyPalette(emerald, [colors[i][0], colors[i][1], colors[i][2], colors[i][3]]);
 			add(emerald);
+			emerald.applyPalette([colors[i][0], colors[i][1], colors[i][2], colors[i][3]]);
 			emeralds.push(emerald);
 		}
 	}

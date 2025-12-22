@@ -10,3 +10,4 @@ enabled	Enabled
 disabled	Disabled
 loading	Loading<1>
 fps_counter	FPS: <1><N>Memory: <2>
+lost_focus	Click to continuef

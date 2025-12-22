@@ -1,5 +1,5 @@
 # List of icon sizes for Windows
-If you're looking for edit, go to [this file](../../Project.hxp#121)
+If you're looking for edit, go to [this file](../../Project.hxp#L138)
 
 ## Sizes
 - 16

@@ -1,6 +1,8 @@
 package options.substates;
 
-class System {
+import options.Option;
+
+class System extends options.OptionsSubState {
 	public function new() {
 		var opt:Option;
 
@@ -14,5 +16,6 @@ class System {
 
 		opt = new Option("haptics", "haptics");
 		addOption(opt);
+		super();
 	}
 }

@@ -1,6 +1,8 @@
 package options.substates;
 
-class Display {
+import options.Option;
+
+class Display extends options.OptionsSubState {
 	public function new() {
 		var option:Option;
 
@@ -17,5 +19,6 @@ class Display {
 
 		option = new Option("low_quality", "lowQuality");
 		addOption(option);
+		super();
 	}
 }

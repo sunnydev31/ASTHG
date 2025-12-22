@@ -1,0 +1,105 @@
+package framework;
+
+import flixel.FlxSprite;
+import flixel.addons.display.FlxSliceSprite;
+import flixel.graphics.FlxGraphic;
+import flixel.math.FlxRect;
+
+/**
+	DESCRIPTION	
+		Custom instance for FlxSprite with better functions
+
+	EXAMPLE	
+		```haxe
+		var mySprite:AsthgSprite = new AsthgSprite();
+		mySprite.create("My Sprite"); // calls `loadGraphic(Paths.image("My Sprite"));`
+		```
+**/
+class AsthgSprite extends FlxSprite {
+
+	public function new(?x:Float = 0.0, ?y:Float = 0.0) {
+		super(x, y);
+	}
+
+	public static function create(x:Float = 0.0, y:Float = 0.0, image:String = null):AsthgSprite {
+		var spr:AsthgSprite = new AsthgSprite(x, y);
+
+		if (!StringUtil.isNull(image))
+			spr.loadGraphic(Paths.image(image));
+		else {
+			trace("[create] 'image' argument is null!");
+			spr.loadGraphic(flixel.system.FlxAssets.getBitmapData("flixel/images/logo/default"));
+		}
+
+		return spr;
+	}
+
+	/**
+		Create a new SparrowAtlas V2 sprite.
+		@param x Horizontal position.
+		@param y Vertical position
+		@param image Image name
+		@return AsthgSprite
+	**/
+	public static function createSparrow(x:Float = 0.0, y:Float = 0.0, image:String = null):AsthgSprite {
+		var spr:AsthgSprite = new AsthgSprite(x, y);
+
+		if (!StringUtil.isNull(image)) {
+			spr.frames = Paths.getSparrowAtlas(image);
+		}
+		else {
+			trace("[createSparrow] 'image' argument is null!");
+			spr.loadGraphic(flixel.system.FlxAssets.getBitmapData("flixel/images/logo/default"));
+		}
+
+		return spr;
+	}
+
+	// Just calls FlxGradient, lol
+	public static function createGradient(width:Int, height:Int, ?colors:Array<FlxColor>, ?chuncks:UInt = 2, ?angle:Int = 0, ?interp:Bool = true):FlxSprite {
+		var spr:FlxSprite = new FlxSprite(); // We need to use FlxSprite here because FlxGradient returns that
+		spr = FlxGradient.createGradientFlxSprite(width, height, colors, chuncks, angle, interp);
+		return spr;
+	}
+
+	public function createGraphic(x:Float = 0.0, y:Float = 0.0, width:Float = 1.0, height:Float = 1.0, color:FlxColor = FlxColor.WHITE):AsthgSprite {
+		var graph:FlxGraphic = FlxG.bitmap.create(2, 2, color, false, 'graphic($x,$y,$width,$height)');
+		frames = graph.imageFrame;
+		scale.set(width / 2, height / 2);
+		updateHitbox(); // We can't use our tool because it's not a FlxSprite-type
+		return this;
+	}
+	
+	/**
+		Switches a global color into a custom color	
+		Note that the sprite must be added or loaded to work
+
+		@param pal The colors to replace in order, Must match the length of the for-loop on the function
+		@return AsthgSprite
+	**/
+	public function applyPalette(pal:Array<FlxColor>):AsthgSprite {
+		for (i in 0...Constants.PALETTE_OVERRIDE.length) {
+			replaceColor(Constants.PALETTE_OVERRIDE[i], pal[i]);
+		}
+
+		return this;
+	}
+
+	/**
+		Scales a sprite to a specific width and height
+		@param width The target width
+		@param height The target height
+		@param updateHitbox Whether to update the hitbox after scaling
+		@return AsthgSprite
+	**/
+	public function scaleSprite(width:Float, height:Float, ?updHitbox:Bool = true):Void {
+		scale.set(width, height);
+		if (updHitbox) updateHitbox();
+	}
+
+	public function scaleGraphicSize(width:Float, height:Float, ?updHitbox:Bool = true):Void {
+		setGraphicSize(width, height);
+		if (updHitbox) updateHitbox();
+	}
+
+}

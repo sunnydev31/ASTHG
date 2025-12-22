@@ -7,10 +7,6 @@ import states.Init;
 
 // Add a variable here and it will get automatically saved
 @:structInit class SaveVariables {
-	public var gameplaySettings:Map<String, Dynamic> = [
-		'practice' => false
-	];
-	
 	// ----------- System -----------
 	public var cacheOnGPU:Bool = #if !switch false #else true #end; //From Stilic
 	public var checkForUpdates:Bool = true;
@@ -34,9 +30,7 @@ class ClientPrefs {
 	public static var data:SaveVariables = {};
 	public static var defaultData:SaveVariables = {};
 
-	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
-	public static var keyBinds:Map<String, Array<FlxKey>> = [
-		//Key Bind, Name for ControlsSubState
+public static var keyBinds:Map<String, Array<FlxKey>> = [
 		'up'			=> [UP],
 		'left'			=> [LEFT],
 		'down'			=> [DOWN],
@@ -58,8 +52,8 @@ class ClientPrefs {
 		'down'			=> [DPAD_DOWN],
 		'right'			=> [DPAD_RIGHT],
 		
-		'accept'		=> [X],
-		'jump'			=> [A],
+		'accept'		=> [A],
+		'jump'			=> [X],
 		'back'			=> [B],
 		'auxiliar'		=> [Y],
 		'pause'			=> [START],
@@ -104,7 +98,6 @@ class ClientPrefs {
 		for (key in Reflect.fields(data))
 			Reflect.setField(FlxG.save.data, key, Reflect.field(data, key));
 
-		#if ACHIEVEMENTS_ALLOWED Achievements.save(); #end
 		FlxG.save.flush();
 
 		//Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
@@ -117,7 +110,6 @@ class ClientPrefs {
 	}
 
 	public static function loadPrefs() {
-		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 
 		for (key in Reflect.fields(data))
 			if (key != 'gameplaySettings' && Reflect.hasField(FlxG.save.data, key))
@@ -142,13 +134,6 @@ class ClientPrefs {
 		{
 			FlxG.drawFramerate = data.framerate;
 			FlxG.updateFramerate = data.framerate;
-		}
-
-		if(FlxG.save.data.gameplaySettings != null)
-		{
-			var savedMap:Map<String, Dynamic> = FlxG.save.data.gameplaySettings;
-			for (name => value in savedMap)
-				data.gameplaySettings.set(name, value);
 		}
 		
 		// flixel automatically saves your volume!
@@ -179,11 +164,6 @@ class ClientPrefs {
 		}
 	}
 
-	inline public static function getGameplaySetting(name:String, defaultValue:Dynamic = null, ?customDefaultValue:Bool = false):Dynamic
-	{
-		if(!customDefaultValue) defaultValue = defaultData.gameplaySettings.get(name);
-		return /*PlayState.isStoryMode ? defaultValue : */ (data.gameplaySettings.exists(name) ? data.gameplaySettings.get(name) : defaultValue);
-	}
 	public static function reloadVolumeKeys()
 	{
 		Init.muteKeys = keyBinds.get('volume_mute').copy();

@@ -1,7 +1,26 @@
 #if !macro
+
+import framework.*;
+
+import backend.ClientPrefs;
+import backend.Controls;
+import backend.Constants;
+import backend.CoolUtil;
 #if DISCORD_ALLOWED
 import backend.Discord;
 #end
+import backend.Locale;
+#if MODS_ALLOWED
+import backend.Mods;
+#end
+import backend.StateManager;
+import backend.SubStateManager;
+import backend.Paths;
+
+import states.LoadingState;
+
+import util.*;
+//---------------------------------//
 
 #if sys
 import sys.*;
@@ -10,17 +29,6 @@ import sys.io.*;
 import js.html.*;
 #end
 
-import backend.ClientPrefs;
-import backend.Controls;
-import backend.Constants;
-import backend.CoolUtil;
-import backend.Locale;
-import backend.StateManager;
-import backend.SubStateManager;
-import backend.Paths;
-
-import states.LoadingState;
-//---------------------------------//
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -40,13 +48,6 @@ import flixel.sound.FlxSound;
 import flixel.util.FlxColor;
 import flixel.util.FlxGradient;
 import flixel.util.FlxTimer;
-
-import firetongue.FireTongue;
-
-#if sys
-import sys.io.File;
-import sys.FileSystem;
-#end
 
 using StringTools;
 #end

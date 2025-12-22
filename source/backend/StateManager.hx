@@ -19,7 +19,11 @@ class StateManager extends FlxState
 		super.create();
 
 		if(!skip) {
+			#if (flixel < "6.1.0")
 			openSubState(new CustomFadeTransition(0.5, true));
+			#else
+			openSubState(() ->new CustomFadeTransition(0.5, true));
+			#end
 		}
 		FlxTransitionableState.skipNextTransOut = false;
 		timePassedOnState = 0;
@@ -52,8 +56,20 @@ class StateManager extends FlxState
 			return;
 		}
 
-		if(FlxTransitionableState.skipNextTransIn) FlxG.switchState(nextState);
-		else startTransition(nextState);
+		if(FlxTransitionableState.skipNextTransIn) {
+			#if (flixel < "6.1.0")
+			FlxG.switchState(nextState);
+			#else
+			FlxG.switchState(() -> nextState);
+			#end
+		}
+		else {
+			#if (flixel < "6.1.0")
+			startTransition(nextState);
+			#else
+			startTransition(() -> nextState);
+			#end
+		}
 		FlxTransitionableState.skipNextTransIn = false;
 	}
 
@@ -72,7 +88,13 @@ class StateManager extends FlxState
 		if(nextState == FlxG.state)
 			CustomFadeTransition.finishCallback = function() FlxG.resetState();
 		else
-			CustomFadeTransition.finishCallback = function() FlxG.switchState(nextState);
+			CustomFadeTransition.finishCallback = function() {
+				#if (flixel < "6.1.0")
+				FlxG.switchState(nextState);
+				#else
+				FlxG.switchState(() -> nextState);
+				#end
+			}
 	}
 
 	public static function getState():StateManager {

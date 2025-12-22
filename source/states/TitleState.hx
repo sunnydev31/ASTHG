@@ -17,14 +17,15 @@ class TitleState extends StateManager {
             Controls.instance.controllerMode = true;
         }
 
-		pressStart = new FlxBitmapText(0, FlxG.height - 20, Locale.getString("press_start", "title_screen", [backend.InputFormatter.getControlNames('accept')]), Paths.getAngelCodeFont("HUD"));
+		pressStart = new FlxBitmapText(0, FlxG.height - 20, Locale.getString("press_start", "title_screen",
+		[backend.InputFormatter.getControlNames('accept')]), Paths.getAngelCodeFont("HUD"));
 		pressStart.screenCenter(X);
 		add(pressStart);
 
 		if (!ClientPrefs.data.flashing)
 			FlxFlicker.flicker(pressStart, 17, 0.12, true);
 
-		CoolUtil.playMusic('TitleScreen', {sample: 0});
+		CoolUtil.playMusic('TitleScreen');
 
 		super.create();
 	}

@@ -1,4 +1,5 @@
 export/
-vscode.code-workspace
 .vscode/
 .haxelib/
+_project/build/transcript.log
+_project/build/setup_config.json

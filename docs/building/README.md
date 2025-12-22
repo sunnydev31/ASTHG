@@ -17,8 +17,7 @@ Windows:
 
 ## Extra
 
-Before running the PowerShell script, check the [config file](../../build/config.psd1) and adjust it to fit your setup.
-Alternatively, you can use `.\build.ps1 (Your Arguments)` to override the config file settings.
+When using the script on powershell, you can use `.\build.ps1 (Your Arguments)` to override the config file settings.
 
 And, feel free to translate the script! (I like translations so that's why it's possible to do it)
 
@@ -29,15 +28,15 @@ There's 2 ways on how to use the build script:
 ### Using PowerShell
 
 1. Open PowerShell (Core) terminal
-2. Navigate to the `build` folder (`Set-Location "[your_project_path]/ASTHG/Build"`)
-3. Call the script with `. .\build.ps1`, you can add arguments if needed (it overrides the config file settings)
+2. Navigate to the `build` folder (`Set-Location "[your_project_path]/ASTHG"`)
+3. Call the script with `. ".\_project\build\build.ps1"`, you can add arguments if needed (it overrides the config file settings)  
   Arguments:
-  - `Platform`: Target platform, Default: Hashlink (`hl`)
-  - `Action`: Build action (second argument for Lime), Default: `test`
-  - `BuildFlags`: Additional build flags to pass to Lime compiler
-  - `Is32Bits`: Whether to build for 32 bits
+ - `Platform`: Target platform, Default: `windows`/`linux`/`mac` or Hashlink (`hl`)
+ - `Action`: Build action (second argument for Lime), Default: `build`
+ - `BuildFlags`: Additional build flags to pass to Lime compiler
+ - `Is32Bits`: Whether to build for 32 bits, Default: `false`
 
 ### Double Click
 1. Navigate to the `build` folder
 2. Double click `build.ps1` file (use `setup.ps1` to configure the project!)
-3. Done! The script will ask for nescessary inputs.****
+3. Done! The script will ask for nescessary inputs.
