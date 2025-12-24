@@ -147,20 +147,17 @@ public static var keyBinds:Map<String, Array<FlxKey>> = [
 		// controls on a separate save file
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v3', CoolUtil.getSavePath());
-		if(save != null)
+		if(save?.data.keyboard != null)
 		{
-			if(save.data.keyboard != null)
-			{
-				var loadedControls:Map<String, Array<FlxKey>> = save.data.keyboard;
-				for (control => keys in loadedControls)
-					if(keyBinds.exists(control)) keyBinds.set(control, keys);
-			}
-			if(save.data.gamepad != null)
-			{
-				var loadedControls:Map<String, Array<FlxGamepadInputID>> = save.data.gamepad;
-				for (control => keys in loadedControls)
-					if(gamepadBinds.exists(control)) gamepadBinds.set(control, keys);
-			}
+			var loadedControls:Map<String, Array<FlxKey>> = save.data.keyboard;
+			for (control => keys in loadedControls)
+				if(keyBinds.exists(control)) keyBinds.set(control, keys);
+		}
+		if(save?.data.gamepad != null)
+		{
+			var loadedControls:Map<String, Array<FlxGamepadInputID>> = save.data.gamepad;
+			for (control => keys in loadedControls)
+				if(gamepadBinds.exists(control)) gamepadBinds.set(control, keys);
 		}
 	}
 

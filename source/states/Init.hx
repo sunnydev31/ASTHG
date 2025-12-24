@@ -4,8 +4,8 @@ import flixel.input.keyboard.FlxKey;
 
 class Init extends StateManager {
 	public static var muteKeys:Array<FlxKey> = [FlxKey.ZERO];
-	public static var volumeDownKeys:Array<FlxKey> = [FlxKey.NUMPADMINUS, FlxKey.MINUS];
-	public static var volumeUpKeys:Array<FlxKey> = [FlxKey.NUMPADPLUS, FlxKey.PLUS];
+	public static var volumeDownKeys:Array<FlxKey> = [FlxKey.NUMPADMINUS];
+	public static var volumeUpKeys:Array<FlxKey> = [FlxKey.NUMPADPLUS];
 
 	override public function create() {
 		trace('Init created');
@@ -29,6 +29,11 @@ class Init extends StateManager {
 
 		FlxTransitionableState.skipNextTransIn = true;
 		FlxTransitionableState.skipNextTransOut = true;
+
+		
+		if (FlxG.gamepads.numActiveGamepads > 0) {
+			Controls.instance.controllerMode = true;
+		}
 
 		StateManager.switchState(new options.OptionsState());
 	}

@@ -1,3 +1,9 @@
+/**
+	Sunnydev31 - 2025-12-22
+	You are allowed to use, modify and redistribute this code
+	But give credit where credit is due!
+**/
+
 package framework;
 
 import flixel.FlxSprite;
@@ -6,14 +12,13 @@ import flixel.graphics.FlxGraphic;
 import flixel.math.FlxRect;
 
 /**
-	DESCRIPTION	
-		Custom instance for FlxSprite with better functions
+	Custom instance for FlxSprite with better functions
 
-	EXAMPLE	
-		```haxe
-		var mySprite:AsthgSprite = new AsthgSprite();
-		mySprite.create("My Sprite"); // calls `loadGraphic(Paths.image("My Sprite"));`
-		```
+	Example:	
+	```haxe
+	var mySprite:AsthgSprite = new AsthgSprite();
+	mySprite.create("My Sprite"); // calls `loadGraphic(Paths.image("My Sprite"));`
+	```
 **/
 class AsthgSprite extends FlxSprite {
 
@@ -26,6 +31,19 @@ class AsthgSprite extends FlxSprite {
 
 		if (!StringUtil.isNull(image))
 			spr.loadGraphic(Paths.image(image));
+		else {
+			trace("[create] 'image' argument is null!");
+			spr.loadGraphic(flixel.system.FlxAssets.getBitmapData("flixel/images/logo/default"));
+		}
+
+		return spr;
+	}
+
+	public static function createSpriteSheet(x:Float = 0.0, y:Float = 0.0, image:String = null):AsthgSprite {
+		var spr:AsthgSprite = new AsthgSprite(x, y);
+
+		if (!StringUtil.isNull(image))
+			spr.loadGraphic(Paths.image(image), );
 		else {
 			trace("[create] 'image' argument is null!");
 			spr.loadGraphic(flixel.system.FlxAssets.getBitmapData("flixel/images/logo/default"));
@@ -92,7 +110,7 @@ class AsthgSprite extends FlxSprite {
 		@param updateHitbox Whether to update the hitbox after scaling
 		@return AsthgSprite
 	**/
-	public function scaleSprite(width:Float, height:Float, ?updHitbox:Bool = true):Void {
+	public function scaleSet(width:Float, height:Float, ?updHitbox:Bool = true):Void {
 		scale.set(width, height);
 		if (updHitbox) updateHitbox();
 	}

@@ -48,7 +48,7 @@ class Main extends Sprite {
 			if (!sys.FileSystem.exists(folderPath))
 				sys.FileSystem.createDirectory(folderPath);
 
-			sys.io.File.saveContent(folderPath + "ASTHG_" + date + ".log", msg);
+			sys.io.File.saveContent(folderPath + 'ASTHG_${date}.log', msg);
 
 			Sys.println(msg);
 

@@ -68,8 +68,7 @@ class LoadingState extends StateManager {
 	}
 	
 	function onLoad() {
-		if (stopMusic && FlxG.sound.music != null)
-			FlxG.sound.music.stop();
+		if (stopMusic) FlxG.sound.music?.stop();
 		
 		StateManager.switchState(target);
 	}
@@ -83,8 +82,7 @@ class LoadingState extends StateManager {
 		Paths.setCurrentLevel(directory);
 		trace('Setting asset folder to $directory');
 
-		if (stopMusic && FlxG.sound.music != null)
-			FlxG.sound.music.stop();
+		if (stopMusic) FlxG.sound.music?.stop();
 		
 		return target;
 	}
@@ -99,14 +97,14 @@ class LoadingState extends StateManager {
 class MultiCallback
 {
 	public var callback:Void->Void;
-	public var logId:String = null;
+	public var logId:Null<String>;
 	public var length(default, null) = 0;
 	public var numRemaining(default, null) = 0;
 	
 	var unfired = new Map<String, Void->Void>();
 	var fired = new Array<String>();
 	
-	public function new (callback:Void->Void, logId:String = null) {
+	public function new (callback:Void->Void, logId:Null<String>) {
 		this.callback = callback;
 		this.logId = logId;
 	}
@@ -123,12 +121,12 @@ class MultiCallback
 				fired.push(id);
 				numRemaining--;
 				
-				if (logId != null)
+				if (!StringUtil.isNull(logId))
 					log('fired $id, $numRemaining remaining');
 				
 				if (numRemaining == 0)
 				{
-					if (logId != null)
+					if (!StringUtil.isNull(logId))
 						log('all callbacks fired');
 					callback();
 				}
@@ -142,7 +140,7 @@ class MultiCallback
 	
 	inline function log(msg):Void
 	{
-		if (logId != null)
+		if (!StringUtil.isNull(logId))
 			trace('$logId: $msg');
 	}
 	

@@ -26,9 +26,7 @@ class CustomFadeTransition extends SubStateManager {
 		transGradient.screenCenter(X);
 		add(transGradient);
 
-		transBlack = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
-		transBlack.scale.set(width, height + 400);
-		transBlack.updateHitbox();
+		transBlack = new AsthgSprite().createGraphic(width, height + 400, FlxColor.BLACK);
 		transBlack.scrollFactor.set();
 		transBlack.screenCenter(X);
 		add(transBlack);

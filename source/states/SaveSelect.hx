@@ -1,3 +1,9 @@
+/**
+	Sunnydev31 - 2025-12-22
+	You are allowed to use, modify and redistribute this code
+	But give credit where credit is due!
+**/
+
 package states;
 
 import objects.Character;
@@ -9,11 +15,11 @@ class SaveSelect extends StateManager {
 	public var saveGroup:FlxTypedGroup<SaveEntry>;
 	var curSelected:Int = 0;
 
-	var selectSave:FlxSprite;
-	var selectUpZone:FlxSprite;
-	var selectUpChar:FlxSprite;
-	var selectDownZone:FlxSprite;
-	var selectDownChar:FlxSprite;
+	var selectSave:AsthgSprite;
+	var selectUpZone:AsthgSprite;
+	var selectUpChar:AsthgSprite;
+	var selectDownZone:AsthgSprite;
+	var selectDownChar:AsthgSprite;
 
 	override function create() {
 		Paths.clearUnusedMemory();
@@ -30,10 +36,10 @@ class SaveSelect extends StateManager {
 		camFront.bgColor.alpha = 5;
 		FlxG.cameras.add(camFront, false);
 		
-		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xff4d4dff);
+		var bg:AsthgSprite = new AsthgSprite().createGraphic(FlxG.width, FlxG.height, 0xff4d4dff);
 		add(bg);
 		
-		var bgLayer:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		var bgLayer:AsthgSprite = new AsthgSprite().createGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		bgLayer.alpha = ClientPrefs.data.backLayers;
 		add(bgLayer);
 		
@@ -50,28 +56,28 @@ class SaveSelect extends StateManager {
 		add(saveGroup);
 
 		//Do not touch the position of this sprite
-		selectSave = new FlxSprite(saveGroup.members[curSelected].x, saveGroup.members[curSelected].y).loadGraphic(Paths.image("saveSelect/selected"));
+		selectSave = AsthgSprite.create(saveGroup.members[curSelected].x, saveGroup.members[curSelected].y, "saveSelect/selected");
 		FlxTween.color(selectSave, 0.2, FlxColor.fromString(Constants.SAVE_SELECTED_FRAME_COLOR[0]), FlxColor.fromString(Constants.SAVE_SELECTED_FRAME_COLOR[1]), {type: FlxTweenType.PINGPONG, ease: FlxEase.linear});
 		selectSave.cameras = [camFront];
 		add(selectSave);
 
 		// Positions of all the sprites above are updated on `changeSelection()`
-		selectUpZone = new FlxSprite().loadGraphic(Paths.image("saveSelect/selectArrow"));
+		selectUpZone = AsthgSprite.create(0, 0, "saveSelect/selectArrow");
 		selectUpZone.color = FlxColor.fromString(Constants.SAVE_SELECTED_ARROW_COLOR[0]);
 		selectUpZone.cameras = [camFront];
 		add(selectUpZone);
 
-		selectUpChar = new FlxSprite().loadGraphic(Paths.image("saveSelect/selectArrow"));
+		selectUpChar = AsthgSprite.create(0, 0, "saveSelect/selectArrow");
 		selectUpChar.color = FlxColor.fromString(Constants.SAVE_SELECTED_ARROW_COLOR[1]);
 		selectUpChar.cameras = [camFront];
 		add(selectUpChar);
 
-		selectDownZone = new FlxSprite().loadGraphic(Paths.image("saveSelect/selectArrowFlip"));
+		selectDownZone = AsthgSprite.create(0, 0, "saveSelect/selectArrowFlip");
 		selectDownZone.color = selectUpZone.color;
 		selectDownZone.cameras = [camFront];
 		add(selectDownZone);
 
-		selectDownChar = new FlxSprite().loadGraphic(Paths.image("saveSelect/selectArrowFlip"));
+		selectDownChar = AsthgSprite.create(0, 0, "saveSelect/selectArrowFlip");
 		selectDownChar.color = selectUpChar.color;
 		selectDownChar.cameras = [camFront];
 		add(selectDownChar);
@@ -105,22 +111,16 @@ class SaveSelect extends StateManager {
 		curSelected = FlxMath.wrap(curSelected + count, 0, saveGroup.length - 1);
 
 		var member = cast saveGroup.members[curSelected];
-		if (member == null) return;
+		if (member == null) {
+			#if debug trace("[changeSelection] Returned: member is null!"); #end
+			return;
+		}
 
-		selectSave.x = member.x;
-		selectSave.y = member.y;
-
-		selectUpZone.x = member.x + 35;
-		selectUpZone.y = member.y + 14;
-
-		selectUpChar.x = selectUpZone.x;
-		selectUpChar.y = member.y + 65;
-
-		selectDownZone.x = selectUpZone.x;
-		selectDownZone.y = selectUpZone.y + 18;
-
-		selectDownChar.x = selectUpChar.x;
-		selectDownChar.y = selectUpChar.y + 30;
+		selectSave.setPosition    (member?.x,	   member?.y);
+		selectUpChar.setPosition  (selectUpZone.x, member?.y + 65);
+		selectDownChar.setPosition(selectUpChar.x, selectUpChar.y + 30);
+		selectUpZone.setPosition  (member?.x + 35,  member?.y + 14);
+		selectDownZone.setPosition(selectUpZone.x, selectUpZone.y + 18);
 
 		CoolUtil.playSound("MenuChange");
 	}

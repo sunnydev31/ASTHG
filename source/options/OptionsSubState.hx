@@ -1,3 +1,9 @@
+/**
+	Sunnydev31 - 2025-12-22
+	You are allowed to use, modify and redistribute this code
+	But give credit where credit is due!
+**/
+
 package options;
 
 import options.Option;
@@ -11,13 +17,11 @@ class OptionsSubState extends SubStateManager {
 	var grpValues:FlxTypedGroup<FlxText>;
 
 	var txtDesc:FlxText;
-	var sprDesc:FlxSprite;
+	var sprDesc:AsthgSprite;
 
 	public function new() {
 		super();
-		var bg = new FlxSprite().makeGraphic(1, 1, 0);
-		bg.setGraphicSize(FlxG.width, FlxG.height);
-		bg.updateHitbox();
+		var bg:AsthgSprite = new AsthgSprite().createGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		bg.alpha = 0.6;
 		add(bg);
 		
@@ -38,9 +42,7 @@ class OptionsSubState extends SubStateManager {
 			grpValues.add(optValues);
 		}
 
-		sprDesc = new FlxSprite(0, FlxG.height * 0.7).makeGraphic(1, 1, 0);
-		sprDesc.setGraphicSize(FlxG.stage.stageWidth, 30);
-		sprDesc.updateHitbox();
+		sprDesc = new AsthgSprite(0, FlxG.height * 0.7).createGraphic(FlxG.stage.stageWidth, 30, FlxColor.BLACK);
 	}
 
 	override public function update(e:Float) {

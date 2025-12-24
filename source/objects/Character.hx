@@ -1,8 +1,8 @@
-/*
-	By Sunkydev31
-	2025.11.30
-	You are allowed to copy, modify and distribute the code in this file.
-*/
+/**
+	Sunnydev31 - 2025-12-22
+	You are allowed to use, modify and redistribute this code
+	But give credit where credit is due!
+**/
 
 package objects;
 
@@ -16,7 +16,7 @@ import haxe.xml.Access;
 class Character extends AsthgSprite {
 	public static final defaultPlayer:String = "sonic";
 	public var json:CharacterData;
-	public static var exAnim:Dynamic = {}; // Data store for new animations
+	private static var exAnim:Dynamic = {}; // Data store for new animations
 	public final lifeIcon:String = "liveIcon";
 	
 	// Special events
@@ -50,7 +50,7 @@ class Character extends AsthgSprite {
 			json = cast Paths.parseJson('data/characters/$char');
 		}
 		else {
-			json = cast Paths.parseJson('data/characters/sonic');
+			json = cast Paths.parseJson('data/characters/$defaultPlayer');
 			trace('Character not found, using default ($defaultPlayer)');
 		}
 
@@ -68,12 +68,12 @@ class Character extends AsthgSprite {
 		frames = Paths.getSparrowAtlas('characters/${json.name}/animData');
 		
 		var anims = json.animations;
-		if(anims != null && anims.length > 0) {
+		if(anims?.length > 0) {
 			for (anim in anims) {
-				if(anim.indices != null && anim.indices.length > 0)
-					animation.addByIndices(Std.string(anim.name), Reflect.hasField(anim, "prefix")? anim.prefix : anim.name, anim.indices, "", anim.fps, anim.loop);
+				if(anim.indices?.length > 0)
+					animation.addByIndices(Std.string(anim.name), Reflect.field(anim, "prefix") ?? anim.name, anim.indices, "", anim.fps, anim.loop);
 				else
-					animation.addByPrefix(Std.string(anim.name), Reflect.hasField(anim, "prefix")? anim.prefix : anim.name, anim.fps, anim.loop);
+					animation.addByPrefix(Std.string(anim.name), Reflect.field(anim, "prefix") ?? anim.name, anim.fps, anim.loop);
 			}
 		}
 	}
@@ -87,14 +87,14 @@ class Character extends AsthgSprite {
 		@param name Name of this animation (Prefered style: `ANI_ANIMATION`, e.g. `ANI_ROLLING`)
 	**/
 	public function addAnim(name:String):Void {
-		trace('[INFO] Added animation to the list. ($name)');
+		trace('[INFO] Added animation to the list. (${animation.getByName(name)})');
 		Reflect.setField(exAnim, name, name);
 	}
 
 	public function animExists(name:AnimList):Bool {
 		if (Reflect.hasField(exAnim, name)){
 			var nameN:String = Std.string(Reflect.field(exAnim, name));
-        	return nameN != null && animation.getByName(nameN) != null;
+        	return (!StringUtil.isNull(nameN) && animation.getByName(nameN) != null);
 		}
 		
 		trace('[WARNING] Animation "$name" doesn\'t exists in the list!');
@@ -103,8 +103,21 @@ class Character extends AsthgSprite {
 }
 
 typedef AnimData = {
+	/**
+		Name of the animation
+	**/
 	name:String,
-	sheets:String,
+
+	/**
+		How should your animation be displayed?
+	**/
+	?displayName:String,
+
+	/**
+		How much spritesheets your animation use?	
+		Separated by comma (`,`)
+	**/
+	?sheets:String,
 
 	/**
 		Name in SparrowAtlas file
@@ -124,21 +137,24 @@ typedef AnimData = {
 
 typedef CharacterData = {
 	/**
-		Name of this character
-		Used on IDs, and for results text
+		Name of this character	
+		Used on IDs and results text
 	**/
 	name:String,
+
+	/**
+		A Custom character icon for the HUD
+	**/
 	?liveIcon:String,
 
 	/**
-		Color that this character uses
-		
+		Color that this character uses	
 		Used for Normal palette showing, super, etc.
 	**/
 	palettes:Array<Array<String>>,
 
 	/**
-		Some characters doesn't achieve Super forms, so there you are!
+		Some characters doesn't achieve Super forms, so there you are!	
 		NOTE: If set to `true`, the live icon needs to have 2 frames!
 	**/
 	hasSuper:Bool,

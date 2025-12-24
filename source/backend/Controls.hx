@@ -22,7 +22,7 @@ class Controls
 		@param low (Strong) Low Frequence motor, period if on mobile
 		@param high (Weak) High frequence motor.
 		@param duration Duration of the vibration
-		@author Sunkydev31
+		@author Sunnydev31
 	**/
 	public function vibrate(low:Float, high:Float, duration:Int) {
 		#if (lime >= "8.3.0")
@@ -36,7 +36,6 @@ class Controls
 		#end
 
 		return lime.ui.Haptic.vibrate(Std.int(low), duration);
-		
 	}
 
 	public function pressed(key:String) {

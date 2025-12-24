@@ -1,8 +1,8 @@
-/*
-	By Sunkydev31
-	2025.11.30
-	You are allowed to copy, modify and distribute the code in this file.
-*/
+/**
+	Sunnydev31 - 2025-12-22
+	You are allowed to use, modify and redistribute this code
+	But give credit where credit is due!
+**/
 
 package objects;
 
@@ -11,8 +11,7 @@ class LifeIcon extends AsthgSprite {
 	public function new(char:String) {
 		super();
 
-		if (states.PlayState.instance != null)
-			charObj = states.PlayState.instance.player;
+		charObj = states.PlayState.instance?.player;
 
 		init(char);
 
@@ -48,8 +47,7 @@ class LifeIcon extends AsthgSprite {
 		animation.play(char);
 
 		if (graphic.width > 17 && graphic.height > 17) { // Sonic CD styled
-			setGraphicSize(17, 17);
-			updateHitbox();
+			this.scaleGraphicSize(17, 17);
 		}
 	}
 

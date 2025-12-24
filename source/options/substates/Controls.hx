@@ -1,3 +1,9 @@
+/**
+	Sunnydev31 - 2025-12-22
+	You are allowed to use, modify and redistribute this code
+	But give credit where credit is due!
+**/
+
 package options.substates;
 
 import flixel.FlxG;
@@ -45,7 +51,7 @@ class Controls extends SubStateManager {
 	public function new() {
 		super();
 		
-		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		var bg:AsthgSprite = new AsthgSprite().createGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		bg.alpha = 0.6;
 		add(bg);
 		
@@ -126,12 +132,14 @@ class Controls extends SubStateManager {
 				startCapture(binds[row][col]);
 				CoolUtil.playSound("MenuAccept");
 			}
-			if (FlxG.keys.justPressed.TAB) {
+
+			if (FlxG.keys.justPressed.TAB || (FlxG.gamepads.anyJustPressed(FlxGamepadInputID.LEFT_SHOULDER) || FlxG.gamepads.anyJustPressed(FlxGamepadInputID.RIGHT_SHOULDER))) {
 				currentDevice = (currentDevice == DeviceType.KEYBOARD ? DeviceType.GAMEPAD : DeviceType.KEYBOARD);
 				refreshLabels();
 				updateSelection();
 				CoolUtil.playSound("MenuAccept");
 			}
+			
 			if (controls.justPressed('back')) close();
 		}
 		else {

@@ -3,8 +3,7 @@ package states;
 import objects.Character;
 import objects.LifeIcon;
 
-class PlayState extends StateManager
-{
+class PlayState extends StateManager {
 	public static var instance:PlayState;
 
 	public var score:Int = 10;
@@ -36,9 +35,6 @@ class PlayState extends StateManager
 	override public function create() {
 		instance = this;
 
-		score = 0;
-		time = "0:00";
-		rings = 0;
 		player = new Character(50, 50, Character.defaultPlayer);
 
 		hudPos = new FlxPoint(8,10);
@@ -48,7 +44,6 @@ class PlayState extends StateManager
 		#end
 		Paths.clearStoredMemory();
 
-		
 		camGame = new FlxCamera();
 		camGame.visible = true;
 		FlxG.cameras.add(camGame);
@@ -75,37 +70,37 @@ class PlayState extends StateManager
 		camGame.follow(player, TOPDOWN, 1);
 		super.create();
 
-		var hudTxtScore:FlxBitmapText = new FlxBitmapText(hudPos.x, hudPos.y, Locale.getString("hud_text_score"), Paths.getAngelCodeFont("HUD"));
-		hudTxtScore.scrollFactor.set();
-		uiGroup.add(hudTxtScore);
+		var scoreHud:FlxBitmapText = new FlxBitmapText(hudPos.x, hudPos.y, Locale.getString("hud_text_score"), Paths.getAngelCodeFont("HUD"));
+		scoreHud.scrollFactor.set();
+		uiGroup.add(scoreHud);
 		
-		var hudTxtTime:FlxBitmapText = new FlxBitmapText(hudPos.x, hudPos.y + 16, Locale.getString("hud_text_time"), Paths.getAngelCodeFont("HUD"));
-		hudTxtTime.scrollFactor.set();
-		uiGroup.add(hudTxtTime);
+		var timeHud:FlxBitmapText = new FlxBitmapText(hudPos.x, hudPos.y + 16, Locale.getString("hud_text_time"), Paths.getAngelCodeFont("HUD"));
+		timeHud.scrollFactor.set();
+		uiGroup.add(timeHud);
 
-		var hudTxtRings:FlxBitmapText = new FlxBitmapText(hudPos.x, hudPos.y + 32, Locale.getString("hud_text_rings"), Paths.getAngelCodeFont("HUD"));
-		hudTxtRings.scrollFactor.set();
-		uiGroup.add(hudTxtRings);
+		var ringsHud:FlxBitmapText = new FlxBitmapText(hudPos.x, hudPos.y + 32, Locale.getString("hud_text_rings"), Paths.getAngelCodeFont("HUD"));
+		ringsHud.scrollFactor.set();
+		uiGroup.add(ringsHud);
 
-		scoreTxt = new FlxBitmapText(hudTxtScore.x + hudTxtScore.width + 37, hudTxtScore.y, '', Paths.getAngelCodeFont("HUD"));
+		scoreTxt = new FlxBitmapText(scoreHud.x + scoreHud.width + 37, scoreHud.y, '', Paths.getAngelCodeFont("HUD"));
 		scoreTxt.scrollFactor.set();
 		scoreTxt.x -= (scoreTxt.width);
-		uiGroup.add(scoreTxt);
-
-		timeTxt = new FlxBitmapText(hudTxtTime.x + hudTxtTime.width + 37, hudTxtTime.y + 16, '', Paths.getAngelCodeFont("HUD"));
+		timeTxt = new FlxBitmapText(timeHud.x + timeHud.width + 37, timeHud.y, '', Paths.getAngelCodeFont("HUD"));
 		timeTxt.scrollFactor.set();
 		timeTxt.x -= (timeTxt.width);
-		uiGroup.add(timeTxt);
 
-		ringsTxt = new FlxBitmapText(hudTxtRings.x + hudTxtRings.width + 37, hudTxtRings.y + 16, '', Paths.getAngelCodeFont("HUD"));
+		ringsTxt = new FlxBitmapText(ringsHud.x + ringsHud.width + 37, ringsHud.y, '', Paths.getAngelCodeFont("HUD"));
 		ringsTxt.scrollFactor.set();
 		ringsTxt.x -= (ringsTxt.width);
+
 		ringsTxt.x = timeTxt.x = scoreTxt.x;
+
+		uiGroup.add(scoreTxt);
+		uiGroup.add(timeTxt);
 		uiGroup.add(ringsTxt);
 
 		livesIcon = new LifeIcon(player.lifeIcon);
-		livesIcon.x = hudPos.x;
-		livesIcon.y = FlxG.height - 26;
+		livesIcon.setPosition(hudPos.x, FlxG.height - 26);
 		livesIcon.applyPalette([
 			FlxColor.fromString(player.json.palettes[player.curPalette][0]),
 			FlxColor.fromString(player.json.palettes[player.curPalette][1]),
@@ -169,9 +164,7 @@ class PlayState extends StateManager
 	}
 
 	function openPauseMenu() {
-		if (FlxG.sound.music != null) {
-			FlxG.sound.music.pause();
-		}
+			FlxG.sound.music?.pause();
 
 		openSubState(new substates.Pause());
 	}
@@ -183,15 +176,11 @@ class PlayState extends StateManager
 	public function playTitleCard(colors:Array<String>) {
 		// Sonic 2 title card because yes
 
-		var bg:FlxSprite = new FlxSprite().makeGraphic(1, 1, 0xff000000);
-		bg.scale.set(FlxG.width, FlxG.height);
-		bg.updateHitbox();
+		var bg:AsthgSprite = new AsthgSprite().createGraphic(FlxG.width, FlxG.height, 0xff000000);
 		bg.cameras = [camFront];
 		add(bg);
 
-		var bg2:FlxSprite = new FlxSprite().makeGraphic(1, 1, FlxColor.fromString(colors[0]));
-		bg2.scale.set(FlxG.width, FlxG.height);
-		bg2.updateHitbox();
+		var bg2:AsthgSprite = new AsthgSprite().createGraphic(FlxG.width, FlxG.height, FlxColor.fromString(colors[0]));
 		bg2.cameras = [camFront];
 		add(bg2);
 		

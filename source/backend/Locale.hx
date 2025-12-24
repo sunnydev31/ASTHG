@@ -22,9 +22,10 @@ class Locale
 	inline public static function getString(key:String, context:String = "data", ?values:Array<Dynamic> = null):String {
 		var str:String = Main.tongue.get(formatKey(key), context, true);
 
-		if (values != null)
+		if (values != null) {
 			for (num => value in values)
 				str = str.replace('<${num + 1}>', Std.string(value));
+		}
 
 		return str;
 	}
@@ -34,16 +35,16 @@ class Locale
 		@param key Default file path
 		@param extension File extension to add ("txt", "png"...), "." will be added automatically
 		@return String
-		@authorTip Sunkydev31
+		@authorTip Sunnydev31
 	**/
 	inline public static function getFile(key:String, ?extension:String = "") {
 		var str:String = Main.tongue.get(key.trim(), "files");
 		if (!StringUtil.isNull(str)) key = str;
 
 		if (!StringUtil.isNull(extension))
-			return key + "." + extension;
-		else
-			return key;
+			key += '.$extension';
+		
+		return key;
 	}
 
 	inline static private function formatKey(key:String) {

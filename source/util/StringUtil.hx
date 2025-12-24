@@ -15,5 +15,5 @@ class StringUtil {
 		@return Bool
 	**/
 	inline public static function isNull(string:String):Bool
-		return (string == null || string.trim().length == 0);
+		return (string?.trim().length <= 0);
 }

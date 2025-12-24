@@ -1,3 +1,9 @@
+/**
+	Sunnydev31 - 2025-12-22
+	You are allowed to use, modify and redistribute this code
+	But give credit where credit is due!
+**/
+
 package options.substates;
 
 import firetongue.FireTongue;
@@ -71,8 +77,7 @@ class Language extends SubStateManager {
 	function changeSelected(change:Int = 0) {
 		curSelected = FlxMath.wrap(curSelected + change, 0, languages.length-1);
 		for (num => lang in grpLanguages) {
-			lang.alpha = 0.6;
-			if(num == curSelected) lang.alpha = 1;
+			lang.alpha = (num == curSelected) ? 1 : 0.6;
 		}
 		CoolUtil.playSound('MenuChange');
 	}

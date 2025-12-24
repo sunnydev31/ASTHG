@@ -38,13 +38,8 @@ class DiscordClient {
 		final discriminator:Null<Int> = Std.parseInt(request[0].discriminator);
 
 		if (discriminator != null && discriminator != 0)
-		{
-			trace('[DISCORD] User: ${username}#${discriminator}');
-		}
-		else
-		{
-			trace('[DISCORD] User: @${username}');
-		}
+			 trace('[DISCORD] User: ${username}#${discriminator}');
+		else trace('[DISCORD] User: @${username}');
 	}
 
 	private static function onError(errorCode:Int, message:cpp.ConstCharStar):Void {
@@ -62,7 +57,7 @@ class DiscordClient {
 		discordHandlers.errored = cpp.Function.fromStaticFunction(onError);
 		Discord.Initialize(clientID, cpp.RawPointer.addressOf(discordHandlers), 1, null);
 
-		if(!isInitialized) trace("Discord Client initialized");
+		if(!isInitialized) trace("[DISCORD] Initialized!");
 
 		sys.thread.Thread.create(() ->
 		{
@@ -86,13 +81,10 @@ class DiscordClient {
 		if (hasStartTimestamp) startTimestamp = Date.now().getTime();
 		if (endTimestamp > 0) endTimestamp = startTimestamp + endTimestamp;
 
-		presence.largeImageKey = (imageLargeKey != null) ? imageLargeKey : "icon";
-		presence.largeImageText = (imageLargeText != null) ? imageLargeText : "In menus";
-		
-		if (imageSmallKey != null)
-			presence.smallImageKey = imageSmallKey;
-		if (imageSmallText != null)
-			presence.smallImageText = imageSmallText;
+		presence.largeImageKey = imageLargeKey ?? "icon";
+		presence.largeImageText = imageLargeText ?? "In menus";
+		presence.smallImageKey = imageSmallKey;
+		presence.smallImageText = imageSmallText;
 
 		presence.details = details;
 		presence.state = state;

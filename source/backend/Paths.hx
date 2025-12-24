@@ -108,8 +108,7 @@ class Paths
 
 	inline static function destroyGraphic(graphic:FlxGraphic) {
 		// free some gpu memory
-		if (graphic != null && graphic.bitmap != null && graphic.bitmap.__texture != null)
-			graphic.bitmap.__texture.dispose();
+		graphic?.bitmap?.__texture?.dispose();
 		FlxG.bitmap.remove(graphic);
 	}
 
@@ -119,11 +118,11 @@ class Paths
 	}
 
 	public static function getPath(file:String, ?type:AssetType = TEXT, ?parentfolder:String = null):String {
-		if (parentfolder != null && parentfolder != "" && parentfolder != "shared") {
+		if (!StringUtil.isNull(parentfolder) && parentfolder != "shared") {
 			return getFolderPath(file, parentfolder);
 		}
 
-		if (currentLevel != null && currentLevel != 'shared') {
+		if (!StringUtil.isNull(currentLevel) && currentLevel != 'shared') {
 			var levelPath = getFolderPath(file, currentLevel);
 			if (OpenFlAssets.exists(levelPath, type))
 				return levelPath;
@@ -174,7 +173,7 @@ class Paths
 		return cacheBitmap(key, parentFolder, bitmap, allowGPU);
 	}
 
-	public static function cacheBitmap(key:String, ?parentFolder:String = null, ?bitmap:BitmapData, ?allowGPU:Bool = true):FlxGraphic {
+	public static function cacheBitmap(key:String, ?parentFolder:String = null, ?bitmap:Null<BitmapData>, ?allowGPU:Bool = true):FlxGraphic {
 		if (bitmap == null) {
 			var file:String = getPath(key, IMAGE, parentFolder);
 			
@@ -259,9 +258,10 @@ class Paths
 		return false;
 	}
 	
-	inline static public function getContent(key:String) {
+	inline static public function getContent(key:String):Null<String> {
 		var path:String = getPath(key, TEXT);
-		if (OpenFlAssets.exists(path, TEXT)) return Assets.getText(path); else {
+		if (OpenFlAssets.exists(path, TEXT)) return Assets.getText(path);
+		else {
 			trace('[getContent] Cannot get the content of "$key" | Path: "$path"');
 			return null;
 		}

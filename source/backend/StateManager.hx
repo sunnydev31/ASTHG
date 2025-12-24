@@ -18,20 +18,15 @@ class StateManager extends FlxState
 
 		super.create();
 
-		if(!skip) {
-			#if (flixel < "6.1.0")
-			openSubState(new CustomFadeTransition(0.5, true));
-			#else
-			openSubState(() ->new CustomFadeTransition(0.5, true));
-			#end
-		}
+		if(!skip) openSubState(new CustomFadeTransition(0.5, true));
 		FlxTransitionableState.skipNextTransOut = false;
 		timePassedOnState = 0;
 	}
 
 	public static var timePassedOnState:Float = 0;
 	override function update(elapsed:Float) {
-		if(FlxG.save.data != null) FlxG.save.data.fullscreen = FlxG.fullscreen;
+		if (FlxG.save.data.fullscreen != null)
+			FlxG.save.data.fullscreen = FlxG.fullscreen;
 
 		super.update(elapsed);
 		
@@ -64,11 +59,7 @@ class StateManager extends FlxState
 			#end
 		}
 		else {
-			#if (flixel < "6.1.0")
 			startTransition(nextState);
-			#else
-			startTransition(() -> nextState);
-			#end
 		}
 		FlxTransitionableState.skipNextTransIn = false;
 	}

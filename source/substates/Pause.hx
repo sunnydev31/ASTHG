@@ -14,16 +14,12 @@ class Pause extends SubStateManager {
 
 	override function create() {
 		options = options2;
-		var bg:FlxSprite = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
-		bg.scale.set(FlxG.width, FlxG.height);
-		bg.updateHitbox();
+		var bg:AsthgSprite = new AsthgSprite().createGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		bg.scrollFactor.set();
 		bg.alpha = 0.20;
 		add(bg);
 
-		var bottomFill:FlxSprite = new FlxSprite(0,FlxG.height-16).makeGraphic(1, 1, FlxColor.BLACK);
-		bottomFill.scale.set(FlxG.width, 20);
-		bottomFill.updateHitbox();
+		var bottomFill:AsthgSprite = new AsthgSprite(0,FlxG.height-16).createGraphic(FlxG.width, 20, FlxColor.BLACK);
 		add(bottomFill);
 
 		backd = new FlxBackdrop(Paths.image("UI/backdropY"), Y);
@@ -113,11 +109,7 @@ class Pause extends SubStateManager {
 		curSelected = FlxMath.wrap(curSelected + change, 0, grpOptions.length - 1);
 		for (num => item in grpOptions.members) {
 			item.ID = num - curSelected;
-			item.color = FlxColor.WHITE;
-
-			if (item.ID == 0) {
-				item.color = FlxColor.RED;
-			}
+			item.color = (item.ID != 0) ? FlxColor.WHITE : FlxColor.RED;
 		}
 	}
 

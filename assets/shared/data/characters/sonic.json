@@ -2,7 +2,7 @@
 	"name": "Sonic",
 	"hasSuper": true,
 	"continues": {
-		"sprite": "continue",
+		"id": "continue",
 		"animated": true,
 		"width": 16,
 		"height": 23
@@ -51,7 +51,6 @@
 		},
 		{
 			"name": "ANI_SUPER_TRANSFORM",
-			"loop": true,
 			"fps": 60,
 			"offsets": [0, 0],
 			"indices": [0, 1, 2, 3]

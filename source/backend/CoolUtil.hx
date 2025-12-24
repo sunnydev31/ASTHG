@@ -57,10 +57,8 @@ class CoolUtil
 		@return Null<Bool> (Bool->false if invalid value)
 	**/
 	public static function parseBool(k:String):Bool {
-		if (k == 'true')
-			return true;
-		else if (k == 'false')
-			return false;
+		if (k == 'true') return true;
+		else if (k == 'false') return false;
 
 		return false;
 	}
@@ -91,10 +89,10 @@ class CoolUtil
 			};
 		}
 
-		var looped:Bool = (Reflect.hasField(musJson, "loop") && musJson.loop == true);
+		var looped:Bool = (Reflect.field(musJson, "loop") == true);
 		var loopTimeVal:Float = 0;
 		if (looped && Reflect.hasField(musJson, "loopStart")) {
-			var hz:Int = (Reflect.hasField(musJson, "heartz") && musJson.heartz != null) ? musJson.heartz : 44100;
+			var hz:Int = (Reflect.field(musJson, "heartz") ?? 44100);
 			loopTimeVal = CoolUtil.getSampleLoop(musJson.loopStart, hz);
 		}
 

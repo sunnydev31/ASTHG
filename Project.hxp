@@ -16,6 +16,10 @@ class Project extends HXProject {
 	static var customDefines:Array<String> = [];
 
 	static var AndroidSettings:Dynamic = {
+
+		/**
+			Icon settings for Android
+		**/
 		Icons: {
 
 			/**
@@ -48,26 +52,24 @@ class Project extends HXProject {
 		this.meta.title		= "Unnamed Sonic Game";
 		
 		/*
-			Format: YEAR.MONTH.DAY
-			YEAR, MONTH, DAY: Current datetime of the update
+			Format: YEAR.MONTH.DAY	
+			(Current datetime of the update)
 		*/
-		this.meta.version	= '2025.12.21';
+		this.meta.version	= '2025.12.22';
 
 		/*
 			Type of build, not number
 			Format: TEST, RELEASE, PREVIEW
 		*/
 		this.meta.buildNumber	= "TEST";
-		this.meta.company		= "SunkyDev31";
-		this.meta.packageName	= "game.sunkydev.asthg";
+		this.meta.company		= "Sunnydev31";
+		this.meta.packageName	= "game.sunkydev.asthg".toLowerCase();
 
-		this.app = {
-			file: "ASTHG",
-			main: "Main",
-			preloader: "flixel.system.FlxPreloader",
-			path: "export/" + (isBuildFlag("debug") ? "debug"
-			: isBuildFlag("final") ? "final" : "release")
-		};
+		this.app.file = "ASTHG";
+		this.app.main = "Main";
+		this.app.preloader = "flixel.system.FlxPreloader";
+		this.app.path = "export/" +
+		(isBuildFlag("debug") ? "debug" : isBuildFlag("final") ? "final" : "release");
 
 
 		if (isTarget("mobile")) {
@@ -133,7 +135,7 @@ class Project extends HXProject {
 			if (AndroidSettings.LocalizedStrings == true) {
 				//Change game name to a translatable string
 				config.set("android.application", {"android:label": "@string/app_name"});
-				config.set("android.activity", {"android:label": "@string/app_name"});
+				config.set("android.activity",	  {"android:label": "@string/app_name"});
 			}
 		}
 
@@ -173,9 +175,9 @@ class Project extends HXProject {
 			if (AndroidSettings.Icons.HasRound == true)
 				config.set("android.activity", {"android:roundIcon": "@drawable/ic_launcher_round"});
 		} else {
-			addIcon("icon",		"png",	8,	true);
-			addIcon("icon",		"png",	16,	true);
-			addIcon("icon",		"svg"); // Main
+			addIcon("icon",	"png",	8,	true);
+			addIcon("icon",	"png",	16,	true);
+			addIcon("icon",	"svg"); // Main
 		}
 	}
 
@@ -201,7 +203,7 @@ class Project extends HXProject {
 	function isMacOS() {
 		return (this.target == Platform.MAC && this.platformType == PlatformType.DESKTOP);
 	}
-	
+
 	/**
 		Gets a bool if the project is runnning on the selected platform
 		@param key Platform target
@@ -213,9 +215,7 @@ class Project extends HXProject {
 			case "mobile": return this.platformType == PlatformType.MOBILE;
 			case "web": return this.platformType == PlatformType.WEB;
 			case "xbox", "xbox1", "xboxone": return this.target == Platform.XBOX1;
-			default:
-				echo("[isTarget] Unknown value '"+ key +"'", true);
-				return false;
+			default: echo("[isTarget] Unknown value '"+ key +"'", true); return false;
 		}
 	}
 
@@ -224,7 +224,7 @@ class Project extends HXProject {
 			case "release": return !this.debug;
 			case "debug": return this.debug;
 			case "final": return this.targetFlags.exists("final");
-			default: trace('[Project.hxp::isBuildFlag] Unknown value \'$key\''); return false;
+			default: echo('[Project.hxp::isBuildFlag] Unknown value \'$key\'', true); return false;
 		}
 	}
 
@@ -296,13 +296,11 @@ class Project extends HXProject {
 	**/
 	function addIcon(name:String, format:String = "png", ?size:Null<Int>, ?appendSizeToName:Null<Bool> = false) {
 		var path:String = "_project/icons/" + name;
-		if (size != null && appendSizeToName) path += Std.string(size);
+		if (size != null && appendSizeToName) path += '$size';
 		path += '.$format';
 
-		if (size != null)
-			echo('[Icon] Path: $path, Size: Placeholder', true); // A null size is a placeholder for all sizes
-		else
-			echo('[Icon] Path: $path, Size: $size', true);
+		echo('[Icon] Path: $path, Size: ' + (size != null ? '$size' : "placeholder"), true); // A null size is a placeholder for all sizes
+
 		this.icons.push(new Icon(path, size));
 	}
 
@@ -320,5 +318,9 @@ class Project extends HXProject {
 		var padding = StringTools.lpad("", ".", dots);
 
 		echo(name + padding + Std.string(value), debug);
+	}
+
+	function isNull(str:String):Bool {
+		return (str?.length <= 0);
 	}
 }

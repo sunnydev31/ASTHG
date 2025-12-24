@@ -1,23 +1,18 @@
 package options;
 
-enum OptionType {
-	BOOL;
-	STRING;
-	INT;
-	FLOAT;
-}
+enum OptionType { BOOL; STRING; INT; FLOAT; }
 
 class Option {
-	public var flag:Null<String> = "Unknown Option";
-	public var desc:Null<String> = "This option does not have a description.";
+	public var flag:String = "Unknown Option";
+	public var desc:String = "This option does not have a description.";
 	public var type:OptionType = OptionType.BOOL;
-	public var saveVar(default, null):String = null;
-	public var options:Dynamic = null;
+	public var saveVar(default, null):Null<String>;
+	public var options:Dynamic;
 	public var value(get, set):Dynamic;
-	public var defaultV:Dynamic = null;
+	public var defaultV:Null<Dynamic>;
 	
 	public var child:FlxText;
-	public var text(get, set):String;
+	public var text(get, set):Null<String>;
 
 	inline public function new(flag:String = "", saveVar:String = "", ?type:OptionType = OptionType.BOOL, ?options:Dynamic) {
 		_name = flag;
@@ -40,7 +35,7 @@ class Option {
 				if (defaultV == null) defaultV = 0;
 			case OptionType.STRING:
 				this.options = {list: ["No Options"], display: "%v"};
-				if (defaultV == null) defaultV = options.list[0];
+				if (defaultV == null) defaultV = options?.list[0];
 		}
 	}
 
@@ -62,9 +57,10 @@ class Option {
 		if (child != null)
 		{
 			_text = newValue;
-			child.text = Locale.getString('$_name-${value}', _text);
+			child.text = Locale.getString('$_name-${value}', "options") ?? _text;
 			return _text;
 		}
+
 		return null;
 	}
 }

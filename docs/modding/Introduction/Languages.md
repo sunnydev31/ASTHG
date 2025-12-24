@@ -33,7 +33,7 @@ Syntax of `index.xml`:
 	<file id="fonts" value="my_fonts.xml"/>
 
 	<locale id="en-US" is_default="true" sort="0">	
-		<contributors value="Sunkydev31"/>
+		<contributors value="Sunnydev31"/>
 		<ui language="Language" region="Region"/>
 		<label id="en-US" language="English" region="United States"/>
 	</locale>

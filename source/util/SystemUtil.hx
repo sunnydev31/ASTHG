@@ -3,23 +3,23 @@ package util;
 class SystemUtil {
 	inline public static function openFolder(folder:String, absolute:Bool = false) {
 		#if sys
-			if(!absolute) folder =  Sys.getCwd() + folder;
+		if(!absolute) folder =  Sys.getCwd() + folder;
 
-			folder = folder.replace('/', '\\');
-			if(folder.endsWith('/')) folder.substr(0, folder.length - 1);
+		folder = folder.replace('/', '\\');
+		if(folder.endsWith('/'))  older.substr(0, folder.length - 1); 
 
-			#if linux
+		#if linux
 			var command:String = '/usr/bin/xdg-open';
-			#elseif windows
+		#elseif windows
 			var command:String = 'explorer.exe';
-			#end
+		#end
 
-			#if (windows || linux)
+		#if (windows || linux)
 			Sys.command(command, [folder]);
-			trace('$command $folder');
-			#end
+			trace('[openFolder] $command $folder');
+		#end
 		#else
-			FlxG.log.error("Platform is not supported for SystemUtil.openFolder");
+		FlxG.log.error("Platform is not supported for SystemUtil.openFolder");
 		#end
 	}
 

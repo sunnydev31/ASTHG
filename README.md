@@ -3,7 +3,7 @@ This is an Sonic engine, made just for fun!
 
 It haves code parts from [Psych Engine][psych_engine]... I'm planning on replacement for all this stuff.
 
-Call me on Discord if you want to [talk with me][sunkydev_discord].
+Call me on Discord if you want to [talk with me][sunnydev_discord].
 
 ## Compiling resources
 - This repo (lol)
@@ -23,7 +23,7 @@ Check [Modding Docs][docs_modding_readme]
 * Game music and sounds: SEGA from Sonic Mania
 
 <!-- My Discord link -->
-[sunkydev_discord]: <https://discordapp.com/users/>
+[sunnydev_discord]: <https://discordapp.com/users/525334699069931521> "Sunnydev's Discord profile"
 
 <!-- Project Paths -->
 [docs_building]: docs/building/
