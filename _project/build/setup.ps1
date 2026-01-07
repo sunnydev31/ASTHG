@@ -7,7 +7,7 @@ Import-LocalizedData -BindingVariable "Msg" -ErrorAction SilentlyContinue
 # Change the title of the windows
 $Host.UI.RawUI.WindowTitle = $Msg.Menu.Title
 
-Start-Transcript -Path "$PSScriptRoot/transcript.log"
+Start-Transcript -Path "$PSScriptRoot/setup.log"
 
 <#
 	.DESCRIPTION
@@ -36,7 +36,7 @@ function Get-Haxelib {
 }
 
 # Checks if the user has PSCore 
-if ($PSVersionTable.PSVersion.Major -lt "6") {
+if ($PSVersionTable.PSVersion.Major -lt "7") {
 	Write-Output $Msg.UnsupportedPS
 	Set-Pause
 	exit
@@ -115,12 +115,6 @@ function Set-SetupAndroid {
 	& "hmm" "haxelib" "extension-androidtools"
 	Start-Sleep 5
 
-	<# I'll implement this later
-	Write-Output $Msg.InstallingDependencies.AndroidTools
-	Invoke-WebRequest -Uri "https://dl.google.com/android/repository/commandlinetools-win-13114758_latest.zip" -OutFile (Join-Path $HOME ".android/cmdlinetools.zip")
-	start-sleep 2
-	#>
-
 	Get-Haxelib "run" @("lime", "setup", "android", "--never")
 	Set-SetupConfig -Name SetupAndroid -Value $true
 }
@@ -132,6 +126,7 @@ function New-GameSetup {
 	Get-Haxelib "install" @("hmm", "--global")
 	Start-Sleep 2
 
+	Set-Location "$PSScriptRoot/../../"
 	Get-Haxelib "run" @("hmm", "setup", "--global")
 	Start-Sleep 2
 
@@ -139,6 +134,8 @@ function New-GameSetup {
 	Set-SetupConfig -Name SetupDone -Value $true
 
 	Write-Output ($Msg.Finished)
+
+	if ($StayOnMenu) { Set-Location $PSScriptRoot }
 }
 
 function Remove-GameSetup {
@@ -159,7 +156,7 @@ function Remove-GameSetup {
 		Search in config if setup has done or if ".haxelib" exists
 		If true, remove ALL dependencies
 	#>
-	if ((Get-SetupConfig -Name SetupDone) -eq $true -or (Test-Path (Resolve-Path "../../.haxelib"))) {
+	if (((Get-SetupConfig -Name SetupDone) -eq $true) -or (Test-Path "$PSScriptRoot/../../.haxelib")) {
 		try { & "hmm" "clean" } catch {}
 	}
 
@@ -175,23 +172,23 @@ do {
 	Write-Output ("===== {0} =====" -f $Msg.Menu.Title)
 	foreach ($i in 0..($Msg["Menu"]["Options"].Count - 1)) {
 		switch($i) {
-		'2' {
-				Write-Output ("{0}. {1}" -f $i, $Msg.Menu.Options[$i])
-				continue
+			0 {
+					if ($HasHaxelib) {
+						Write-Output ("{0}. {1}" -f $i, $Msg.Menu.Options[$i])
+					} else {
+						Write-Output ("{0}. {1}" -f $i, $Msg.Menu.NotAvailableOpt)
+					}
+					continue
 			}
-		'3' {
-				Write-Output ("{0}. {1}" -f $i, $Msg.Menu.Options[$i])
-				continue
+			4 {
+					if ($HasHaxelib) {
+						Write-Output ("{0}. {1}" -f $i, $Msg.Menu.Options[$i])
+					} else {
+						Write-Output ("{0}. {1}" -f $i, $Msg.Menu.NotAvailableOpt)
+					}
+					continue
 			}
-		'4' {
-				if ($HasHaxelib) {
-					Write-Output ("{0}. {1}" -f $i, $Msg.Menu.Options[$i])
-				} else {
-					Write-Output ("{0}. {1}" -f $i, $Msg.Menu.NotAvailableOpt)
-				}
-				continue
-			}
-		default { Write-Output ("{0}. {1}" -f $i, $Msg.Menu.Options[$i]) }
+			default { Write-Output ("{0}. {1}" -f $i, $Msg.Menu.Options[$i]); continue}
 		}
 	}
 	Write-Output ""
@@ -206,6 +203,7 @@ do {
 		'4' { if ($HasHaxelib)	{Remove-GameSetup} }
 		'5' { exit }
 		'exit' { exit }
-		default { Write-Output ($Msg.Menu.Error) }
+		default { Write-Output ($Msg.Menu.Error)}
 	}
 } while ($StayOnMenu.ToLower() -in @("y","yes","true","1"))
+Stop-Transcript

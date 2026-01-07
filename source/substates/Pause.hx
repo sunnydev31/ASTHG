@@ -2,7 +2,7 @@ package substates;
 
 class Pause extends SubStateManager {
 	var curSelected:Int = 0;
-	var grpOptions:FlxTypedGroup<FlxText>;
+	var grpOptions:FlxTypedGroup<AsthgText>;
 	var options:Array<String> = [];
 	var options2:Array<String> = [
 		'Resume',
@@ -33,11 +33,11 @@ class Pause extends SubStateManager {
 		var backdFill:AsthgSprite = new AsthgSprite(backd.x + backd.width, 0).createGraphic(Std.int(fillWidth), FlxG.height, backd.color);
 		add(backdFill);
 
-		grpOptions = new FlxTypedGroup<FlxText>();
+		grpOptions = new FlxTypedGroup<AsthgText>();
 		add(grpOptions);
 
 		var titleTxt:FlxBitmapText = new FlxBitmapText(20, bottomFill.y - 6, Locale.getString("title", "pause"), Paths.getAngelCodeFont("Roco"));
-		titleTxt.setBorderStyle(FlxTextBorderStyle.SHADOW, FlxColor.BLACK, 2, 0);
+		titleTxt.setBorderStyle(flixel.text.FlxText.FlxTextBorderStyle.SHADOW, FlxColor.BLACK, 2, 0);
 		add(titleTxt);
 
 		regenerateMenu();
@@ -85,7 +85,7 @@ class Pause extends SubStateManager {
 	function regenerateMenu() {
 		for (i in 0...grpOptions.members.length)
 		{
-			var obj:FlxText = grpOptions.members[0];
+			var obj:AsthgText = grpOptions.members[0];
 			obj.kill();
 			grpOptions.remove(obj, true);
 			obj.destroy();

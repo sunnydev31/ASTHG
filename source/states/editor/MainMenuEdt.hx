@@ -2,22 +2,22 @@ package states.editor;
 
 class MainMenuEdt extends StateManager {
 	var selected:Int = 0;
-	var group:FlxTypedGroup<FlxText>;
+	var group:FlxTypedGroup<AsthgText>;
 	var options:Array<String> = [
 		"Character Editor"
 	];
 	
 	override public function create() {
-		var bg:FlxSprite = AsthgSprite.createGradient(FlxG.width, FlxG.height, [0xFF353535, 0xFF979797], 4, 32, false);
+		var bg:flixel.FlxSprite = AsthgSprite.createGradient(FlxG.width, FlxG.height, [0xFF353535, 0xFF979797], 4, 32, false);
 		add(bg);
 
 		
-		group = new FlxTypedGroup<FlxText>();
+		group = new FlxTypedGroup<AsthgText>();
 		add(group);
 
 		for (num => str in options) {
-			var menu:FlxText = new FlxText(10, 30, 0, Locale.getString("title_" + str, "editor_menu"), 32);
-			menu.setFormat(Paths.font("Mania.ttf"), 16, FlxColor.WHITE, "center");
+			var menu:AsthgText = AsthgText.create(10, 30, Locale.getString("title_" + str, "editor_menu"));
+			menu.format(16, "center", FlxColor.WHITE);
 			menu.y += (18 * num);
 			menu.ID = num;
 			group.add(menu);
@@ -60,7 +60,7 @@ class MainMenuEdt extends StateManager {
 	function changeItem(change:Int = 0) {
 		selected = FlxMath.wrap(selected + change, 0, group.length - 1);
 		
-		group.forEach(function(txt:FlxText) {
+		group.forEach(function(txt:AsthgText) {
 			txt.color = (txt.ID == selected) ? 0xFF002896 : 0xFFFFFFFF;
 		});
 	}

@@ -29,15 +29,15 @@ class LoadingState extends StateManager {
 		super();
 	}
 
-	var loadingTxt:FlxText;
+	var loadingTxt:AsthgText;
 	var loadBar:FlxBar;
 
 	override function create() {
-		var bg:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, 0xfff0f0f0);
+		var bg:AsthgSprite = new AsthgSprite(0, 0).createGraphic(FlxG.width, FlxG.height, 0xfff0f0f0);
 		add(bg);
 		
-		loadingTxt = new FlxText(0, 70, 0, Locale.getString("loading", "data", ["..."]), 16);
-		loadingTxt.setFormat(Paths.font("Mania.ttf"), 16, FlxColor.WHITE, "center");
+		loadingTxt = AsthgText.create(0, 70, Locale.getString("loading", "data", ["..."]));
+		loadingTxt.format(16, "center", FlxColor.WHITE);
 		add(loadingTxt);
 
 		loadBar = new FlxBar(0, FlxG.height - 20, FlxBarFillDirection.LEFT_TO_RIGHT, FlxG.width * 0.8, 10);

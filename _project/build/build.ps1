@@ -19,7 +19,8 @@ $haxelib = if (-not (Get-Command "haxelib" -ErrorAction SilentlyContinue)) {
 } else { Get-Command "haxelib" -ErrorAction Stop}
 
 # Start with default settings if not called on PowerShell terminal
-if ([string]::IsNullOrEmpty($Platform))		{ $Platform	= if ($IsWindows) { "windows" } elseif ($IsLinux) { "linux" }  elseif ($IsMacOS) { "mac" } else { "hl" } }
+# CPP -> Windows / Linux / MacOS (depends on host)
+if ([string]::IsNullOrEmpty($Platform))		{ $Platform	= if ($IsWindows -or $IsLinux -or $IsMacOS) { "cpp" } else { "hl" } }
 if ([string]::IsNullOrEmpty($Action))		{ $Action		= "build" }
 if ([string]::IsNullOrEmpty($Is32Bits))		{ $Is32Bits		= "false" }
 
@@ -43,7 +44,7 @@ function Set-Pause {
 }
 
 # Set the cwd to "ASTHG"
-Set-Location (Resolve-Path "$PSScriptRoot/../../")
+Set-Location "$PSScriptRoot/../../"
 
 # If arguments are available, add them
 if (-not [string]::IsNullOrEmpty($BuildFlags)) {

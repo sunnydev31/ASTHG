@@ -1,157 +1,152 @@
 import hxp.*;
 import lime.tools.*;
 
-/**
-	List of all Features of the engine
-**/
-enum FeatureFlags {
-	MODS_ALLOWED;
-	DISCORD_ALLOWED;
-	TRANSLATIONS_ALLOWED;
-}
+using StringTools;
 
-class Project extends HXProject {
-
+class Project extends HXProject
+{
+	/**
+		Name of the project
+		Can be translated on android build (check below)
+	**/
+	final TITLE:String = "Unnamed Sonic Game";
+	
+	/*
+		Rule: YEAR.MONTH.DAY	
+		(Current datetime of the update)
+	 */
+	final VERSION:String = "2026.1.7";
+	
+	/*
+		Type of build
+		Options: TEST, RELEASE, PREVIEW
+	 */
+	final BUILD_TYPE:String = "TEST";
+	final COMPANY:String = "Sunnydev31";
+	final PACKAGE_NAME:String = "game.sunkydev.asthg";
+	final FILE:String = "ASTHG";
+	
 	static var EXCLUDE_ASSETS:Array<String> = [];
-	static var customDefines:Array<String> = [];
-
+	
 	static var AndroidSettings:Dynamic = {
-
 		/**
 			Icon settings for Android
 		**/
 		Icons: {
-
 			/**
 				Adaptive icons (Android 8.0+) uses a foreground and background layer to create different shapes
 				Adds support for monochrome icons on Android 12+ too, this depends on how you configured the XML files. 
 			**/
-			Adaptive: true, 
-
+			Adaptive: true,
 			/**
 				A circular version of the icon for devices that use round icons
 				OPTIONAL if you are using Adaptive icons
 			**/
 			HasRound: false
 		},
-
 		/**
 			Changes the game title to a translatable string (by now).
 			Also, you can add more localized strings support
 		**/
 		LocalizedStrings: true
 	};
-
+	
 	static var WindowsSettings:Dynamic = {
-		CustomVisuals: false // Doesn't work by now
+		CustomVisuals: true // Doesn't work by now
 	}
-
+	
 	public function new() {
 		super();
-
-		this.meta.title		= "Unnamed Sonic Game";
 		
-		/*
-			Format: YEAR.MONTH.DAY	
-			(Current datetime of the update)
-		*/
-		this.meta.version	= '2025.12.22';
-
-		/*
-			Type of build, not number
-			Format: TEST, RELEASE, PREVIEW
-		*/
-		this.meta.buildNumber	= "TEST";
-		this.meta.company		= "Sunnydev31";
-		this.meta.packageName	= "game.sunkydev.asthg".toLowerCase();
-
-		this.app.file = "ASTHG";
+		this.meta.title = TITLE;
+		this.meta.version = VERSION;
+		this.meta.buildNumber = BUILD_TYPE;
+		this.meta.company = COMPANY;
+		this.meta.packageName = PACKAGE_NAME.toLowerCase();
+		
+		this.app.file = FILE;
 		this.app.main = "Main";
 		this.app.preloader = "flixel.system.FlxPreloader";
-		this.app.path = "export/" +
-		(isBuildFlag("debug") ? "debug" : isBuildFlag("final") ? "final" : "release");
-
-
+		this.app.path = "export/" + (isDebug() ? "debug" : isFinal() ? "final" : "release");
+		
 		if (isTarget("mobile")) {
 			this.window.width = 0;
 			this.window.height = 0;
 			this.window.fullscreen = true;
-		} else {
+		} else
+		{
 			this.window.width = 426;
 			this.window.height = 228;
 		}
-
+		
 		this.window.orientation = Orientation.LANDSCAPE;
 		this.window.fps = 60;
-		this.window.background = (isBuildFlag("debug")) ? 0xFF00FF : 0x000000;
+		this.window.background = (isDebug()) ? 0xFF00FF : 0x000000;
 		this.window.resizable = (isTarget("web") || isTarget("desktop")) ? true : false;
-
+		
 		if (isTarget("web")) EXCLUDE_ASSETS.push("*.ogg");
-		else EXCLUDE_ASSETS.push("*.mp3");
-
+		else				 EXCLUDE_ASSETS.push("*.mp3");
+			
 		echo("");
-		echo('${this.meta.title} v' + this.meta.version +
-		(this.meta.buildNumber != null ? ' (build ${this.meta.buildNumber})' : ""));
+		echo('${this.meta.title} v' + this.meta.version + (this.meta.buildNumber != null ? ' (build ${this.meta.buildNumber})' : ""));
 		echo("-----------------------------------------");
 		dotPad("Company", this.meta.company, 24, false);
 		dotPad("Package", this.meta.packageName, 24, false);
 		dotPad("App file", this.app.file, 24, false);
 		echo("-----------------------------------------");
-
+		
+		includeAssets("assets/embed", "assets/shared", null, EXCLUDE_ASSETS);
 		includeAssets("assets/shared", null, null, EXCLUDE_ASSETS);
 		includeAssets("assets/fonts", null);
 		includeAssets("assets/locales", null);
-
+		
 		sources.push("source");
-
-		setFlag(MODS_ALLOWED, false); // Polymod dependencies are breaking so it will be disabled by default
-		setFlag(DISCORD_ALLOWED, isTarget("cpp"));
-		setFlag(TRANSLATIONS_ALLOWED, true);
+		
+		MODS_ALLOWED.set(this, false); // Polymod dependencies are breaking so it will be disabled by default
+		DISCORD_ALLOWED.set(this, false);
+		TRANSLATIONS_ALLOWED.set(this, true);
 		echo("-----------------------------------------", true);
-
-		syncDefines();
-
-		if (hasFlag(MODS_ALLOWED))
+		
+		if (MODS_ALLOWED.has(this))
 			includeAssets("mods", null);
-
+			
 		// Adding Haxelibs
 		addHaxelib("flixel");
 		addHaxelib("flixel-addons");
-		addHaxelib("tjson");
-
-		addHaxelib("hxdiscord_rpc", (isTarget("cpp") && hasFlag(DISCORD_ALLOWED)));
-		//addHaxelib("hxcpp-debug-server", (isBuildFlag("debug")));
-
-		addHaxelib("polymod", hasFlag(MODS_ALLOWED));
-		addHaxelib("firetongue", true); // Do NOT disable this.
-
+		
+		addHaxelib("hxdiscord_rpc", (isCPP() && DISCORD_ALLOWED.get(this)));
+		// addHaxelib("hxcpp-debug-server", (isDebug()));
+		
+		addHaxelib("polymod", MODS_ALLOWED.get(this));
+		addHaxelib("firetongue", true); // Do NOT disable this, or all texts will not load
+		
 		addHaxelib("haxeui-core");
 		addHaxelib("haxeui-flixel");
-
+		
 		// Android configs
 		if (isAndroid()) {
 			addHaxelib("extension-androidtools");
-	
+			
 			if (AndroidSettings.LocalizedStrings == true) {
-				//Change game name to a translatable string
+				// Change game name to a translatable string
 				config.set("android.application", {"android:label": "@string/app_name"});
-				config.set("android.activity",	  {"android:label": "@string/app_name"});
+				config.set("android.activity", {"android:label": "@string/app_name"});
 			}
 		}
-
-		if (!isBuildFlag("debug")) {
+		
+		if (!isDebug()) {
 			haxedefs.set("FLX_NO_DEBUG", null);
 			haxedefs.set("NAPE_RELEASE_BUILD", null);
 		}
-
+		
 		haxedefs.set("FLX_NO_FOCUS_LOST_SCREEN", null);
 		haxedefs.set("message.reporting", "pretty");
-
+		
 		// Configure PolyMod
-		if (hasFlag(MODS_ALLOWED)) {
-			if (isBuildFlag("debug"))
-				haxedefs.set("POLYMOD_DEBUG",			true);
-			
+		if (MODS_ALLOWED.has(this)) {
+			if (isDebug())
+				haxedefs.set("POLYMOD_DEBUG", true);
+				
 			haxedefs.set("POLYMOD_API_VERSION_MATCH",	"NONE");
 			haxedefs.set("POLYMOD_MOD_METADATA_FILE",	"mod.json");
 			haxedefs.set("POLYMOD_MOD_PACK_FILE",		"modpack.txt");
@@ -160,150 +155,118 @@ class Project extends HXProject {
 			haxedefs.set("POLYMOD_SCRIPT_EXT",			".hxs");
 			haxedefs.set("POLYMOD_SCRIPT_LIBRARY",		"scripts");
 		}
-
+		
 		templatePaths.push("_project/templates");
+		
+		if (WindowsSettings.CustomVisuals) {
+			includeAssets("_project/templates/windows/template", "");
+		}
 		
 		if (isAndroid() && AndroidSettings.Icons.Adaptive == true) {
 			/*
 				NOTE
 				This icons can be a drawable (VectorDrawable/"Android SVG") or an mipmap (Image)
 				If you will use mipmaps, check "templates" folder
-			*/
-
+			 */
+			
 			config.set("android.activity", {"android:icon": "@drawable/ic_launcher"});
-
+			
 			if (AndroidSettings.Icons.HasRound == true)
 				config.set("android.activity", {"android:roundIcon": "@drawable/ic_launcher_round"});
-		} else {
-			addIcon("icon",	"png",	8,	true);
-			addIcon("icon",	"png",	16,	true);
-			addIcon("icon",	"svg"); // Main
+		} else
+		{
+			addIcon("icon", "png", 8, true);
+			addIcon("icon", "png", 16, true);
+			addIcon("icon", "svg"); // Main
 		}
 	}
-
-
+	
 	// Platform functions
-
-	function isAndroid() {
-		return (this.target == Platform.ANDROID && this.platformType == PlatformType.MOBILE);
+	
+	function isAndroid():Bool {
+		return (this.target == Platform.ANDROID && this.platformType == PlatformType.MOBILE); // Ignoring Android TVs lol
 	}
-
-	function isIOS() {
+	
+	function isIOS():Bool {
 		return (this.target == Platform.IOS && this.platformType == PlatformType.MOBILE);
 	}
-
-	function isWindows() {
+	
+	function isWindows():Bool {
 		return (this.target == Platform.WINDOWS && this.platformType == PlatformType.DESKTOP);
 	}
-
-	function isLinux() {
+	
+	function isLinux():Bool {
 		return (this.target == Platform.LINUX && this.platformType == PlatformType.DESKTOP);
 	}
-
-	function isMacOS() {
+	
+	function isMacOS():Bool {
 		return (this.target == Platform.MAC && this.platformType == PlatformType.DESKTOP);
 	}
-
+	
+	function isCPP():Bool {
+		return (this.targetFlags.exists("cpp"));
+	}
+	
 	/**
 		Gets a bool if the project is runnning on the selected platform
 		@param key Platform target
 	**/
-	function isTarget(key:String) {
-		switch ((StringTools.replace(key, ' ', '_')).toLowerCase()) { //Added only the ones this game uses
-			case "cpp", "hl", "neko": return this.targetFlags.exists(key);
-			case "desktop": return this.platformType == PlatformType.DESKTOP;
-			case "mobile": return this.platformType == PlatformType.MOBILE;
-			case "web": return this.platformType == PlatformType.WEB;
-			case "xbox", "xbox1", "xboxone": return this.target == Platform.XBOX1;
-			default: echo("[isTarget] Unknown value '"+ key +"'", true); return false;
+	function isTarget(key:String):Bool {
+		switch (key.trim().toLowerCase()) { // Added only the ones this game uses
+			case "hl", "neko":
+				return this.targetFlags.exists(key);
+			case "desktop":
+				return (this.platformType == PlatformType.DESKTOP);
+			case "mobile":
+				return (this.platformType == PlatformType.MOBILE);
+			case "web":
+				return (this.platformType == PlatformType.WEB);
+			default:
+				return false;
 		}
 	}
-
-	function isBuildFlag(key:String) {
-		switch (key.toLowerCase()) {
-			case "release": return !this.debug;
-			case "debug": return this.debug;
-			case "final": return this.targetFlags.exists("final");
-			default: echo('[Project.hxp::isBuildFlag] Unknown value \'$key\'', true); return false;
-		}
-	}
-
-	function hasFlag(key:Dynamic) {
-		var flagKey:String = (Std.isOfType(key, FeatureFlags) ? Type.enumConstructor(key) : Std.string(key));
-		return this.defines.exists(flagKey);
-	}
-
-	function setFlag(key:Dynamic, value:Dynamic) {
-		var flagKey:String = (Std.isOfType(key, FeatureFlags) ? Type.enumConstructor(key) : Std.string(key));
-
-		if (value == null)
-			value = false;
-
-		if (!customDefines.contains(flagKey)) //Prevents "key" to be added again
-			customDefines.push(flagKey);
-
-
-		dotPad(flagKey, (value == false)? "false" : "true");
-		return this.defines.set(flagKey, Std.string(value));
-	}
-
-	function getFlag(key:Dynamic) {
-		var flagKey:String = (Std.isOfType(key, FeatureFlags) ? Type.enumConstructor(key) : Std.string(key));
-		return this.defines.get(flagKey);
-	}
-
-	function syncDefines():Void {
-		for (key in customDefines) {
-			var value = getFlag(key);
-			if (value == null || value == "true") {
-				this.haxedefs.set(key, null);
-			}
-			else if (value != "false") {
-				this.haxedefs.set(key, value);
-			}
-		}
-	}
-
-	function addHaxelib(name:String, ?condition:Bool) {
-		if (condition == null || condition) {
+	
+	function isDebug():Bool { return this.debug; }
+	
+	function isFinal():Bool
+		return this.targetFlags.exists("final");
+		
+	function addHaxelib(name:String, ?condition:Null<Bool>) {
+		if (condition == null || condition == true) {
 			this.haxelibs.push(new Haxelib(name));
-			dotPad(name, "true");
-		} else {
-			dotPad(name, "false");
-		}
+			dotPad(name, true);
+		} else { dotPad(name, false); }
 	}
-
+	
 	/**
 		Prints a text to the console
 		@param value The text to print
 		@param debug If true, only prints if the build flag "debug" is enabled
 	**/
-	function echo(value:String, ?debug:Bool = false) {
+	public function echo(value:Dynamic, ?debug:Bool = false) {
 		if (debug) {
-			if (isBuildFlag("debug"))
-				return Sys.println(value);
-			else
-				return;
+			if (isDebug()) return Sys.println(value);
+			else { return; }
 		} else { return Sys.println(value); }
 	}
-
+	
 	/**
 		Adds an icon for the application.
 		@param name Filename of the icon
 		@param format File extension (`png`, `jpg`, `svg`...), usually `png`
 		@param size Icon size to append, `null` will use this icon for all sizes
-		@param appendSizeTonName If true, the `size` argument will be added to the icon name, becoming `icon16.png` for example
+		@param appendSizeToName If true, the `size` argument will be added to the icon name, becoming `icon16.png` for example
 	**/
 	function addIcon(name:String, format:String = "png", ?size:Null<Int>, ?appendSizeToName:Null<Bool> = false) {
 		var path:String = "_project/icons/" + name;
 		if (size != null && appendSizeToName) path += '$size';
 		path += '.$format';
-
+		
 		echo('[Icon] Path: $path, Size: ' + (size != null ? '$size' : "placeholder"), true); // A null size is a placeholder for all sizes
-
+		
 		this.icons.push(new Icon(path, size));
 	}
-
+	
 	/**
 		Prints a beauty log text like "My text......My value"
 		@param name Text on the Left
@@ -311,16 +274,48 @@ class Project extends HXProject {
 		@param width Spacement width
 		@param debug Prints only if is a debug target
 	**/
-	function dotPad(name:String, value:Dynamic, ?width:Int = 30, ?debug:Bool = true) {
+	public function dotPad(name:String, value:Dynamic, ?width:Int = 30, ?debug:Bool = true) {
 		var dots = width - name.length;
 		if (dots < 1) dots = 1;
-
+			
 		var padding = StringTools.lpad("", ".", dots);
-
-		echo(name + padding + Std.string(value), debug);
+		
+		echo(name + padding + value, debug);
 	}
+	
+	inline public function isNull(str:String):Bool
+		return (str?.trim().length <= 0);
+}
 
-	function isNull(str:String):Bool {
-		return (str?.length <= 0);
+/**
+	List of all Features of the engine
+	Contains also functions for enabling/disabling, get values and check existence
+**/
+enum abstract FeatureFlags(String) from String to String {
+	var MODS_ALLOWED = "MODS_ALLOWED";
+	var DISCORD_ALLOWED = "DISCORD_ALLOWED";
+	var TRANSLATIONS_ALLOWED = "TRANSLATIONS_ALLOWED";
+	var VIDEOS_ALLOWED = "VIDEOS_ALLOWED";
+	
+	public function set(project:Project, enable:Bool = true) {
+		if (enable || enable == null) {
+			project.haxedefs.set(this, "");
+		}
+		else {
+			if (has(project)) {
+				project.haxedefs.remove(this);
+			}
+				
+			// Nothing
+		}
+		project.dotPad(this, enable);
+	}
+	
+	public function get(project:Project):Bool {
+		return (has(project)) ? project.haxedefs.get(this) : false;
+	}
+	
+	public function has(project:Project) {
+		return project.haxedefs.exists(this);
 	}
 }

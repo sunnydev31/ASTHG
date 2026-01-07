@@ -14,6 +14,6 @@ class StringUtil {
 		@param string The string to check
 		@return Bool
 	**/
-	inline public static function isNull(string:String):Bool
+	inline public static function isNull(string:Null<String>):Bool
 		return (string?.trim().length <= 0);
 }

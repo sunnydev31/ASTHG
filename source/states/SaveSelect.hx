@@ -16,10 +16,10 @@ class SaveSelect extends StateManager {
 	var curSelected:Int = 0;
 
 	var selectSave:AsthgSprite;
-	var selectUpZone:AsthgSprite;
-	var selectUpChar:AsthgSprite;
-	var selectDownZone:AsthgSprite;
-	var selectDownChar:AsthgSprite;
+	var arrow1:AsthgSprite;
+	var arrow3:AsthgSprite;
+	var arrow2:AsthgSprite;
+	var arrow4:AsthgSprite;
 
 	override function create() {
 		Paths.clearUnusedMemory();
@@ -28,7 +28,7 @@ class SaveSelect extends StateManager {
 		saveGroup = new FlxTypedGroup<SaveEntry>();
 
 		#if DISCORD_ALLOWED
-		DiscordClient.changePresence(Locale.getString('save_select', 'discord'), null);
+		DiscordClient.changePresence(Locale.getString('save_select', 'discord'));
 		#end
 
 		camFront = new FlxCamera();
@@ -57,30 +57,30 @@ class SaveSelect extends StateManager {
 
 		//Do not touch the position of this sprite
 		selectSave = AsthgSprite.create(saveGroup.members[curSelected].x, saveGroup.members[curSelected].y, "saveSelect/selected");
-		FlxTween.color(selectSave, 0.2, FlxColor.fromString(Constants.SAVE_SELECTED_FRAME_COLOR[0]), FlxColor.fromString(Constants.SAVE_SELECTED_FRAME_COLOR[1]), {type: FlxTweenType.PINGPONG, ease: FlxEase.linear});
+		FlxTween.color(selectSave, 0.2, Constants.SAVE_SELECTED_FRAME_COLOR[0], Constants.SAVE_SELECTED_FRAME_COLOR[1], {type: FlxTweenType.PINGPONG, ease: FlxEase.linear});
 		selectSave.cameras = [camFront];
 		add(selectSave);
 
 		// Positions of all the sprites above are updated on `changeSelection()`
-		selectUpZone = AsthgSprite.create(0, 0, "saveSelect/selectArrow");
-		selectUpZone.color = FlxColor.fromString(Constants.SAVE_SELECTED_ARROW_COLOR[0]);
-		selectUpZone.cameras = [camFront];
-		add(selectUpZone);
+		arrow1 = AsthgSprite.create(0, 0, "saveSelect/selectArrow");
+		arrow1.color = Constants.SAVE_SELECTED_ARROW_COLOR[0];
+		arrow1.cameras = [camFront];
+		add(arrow1);
 
-		selectUpChar = AsthgSprite.create(0, 0, "saveSelect/selectArrow");
-		selectUpChar.color = FlxColor.fromString(Constants.SAVE_SELECTED_ARROW_COLOR[1]);
-		selectUpChar.cameras = [camFront];
-		add(selectUpChar);
+		arrow3 = AsthgSprite.create(0, 0, "saveSelect/selectArrow");
+		arrow3.color = Constants.SAVE_SELECTED_ARROW_COLOR[1];
+		arrow3.cameras = [camFront];
+		add(arrow3);
 
-		selectDownZone = AsthgSprite.create(0, 0, "saveSelect/selectArrowFlip");
-		selectDownZone.color = selectUpZone.color;
-		selectDownZone.cameras = [camFront];
-		add(selectDownZone);
+		arrow2 = AsthgSprite.create(0, 0, "saveSelect/selectArrowFlip");
+		arrow2.color = arrow1.color;
+		arrow2.cameras = [camFront];
+		add(arrow2);
 
-		selectDownChar = AsthgSprite.create(0, 0, "saveSelect/selectArrowFlip");
-		selectDownChar.color = selectUpChar.color;
-		selectDownChar.cameras = [camFront];
-		add(selectDownChar);
+		arrow4 = AsthgSprite.create(0, 0, "saveSelect/selectArrowFlip");
+		arrow4.color = arrow3.color;
+		arrow4.cameras = [camFront];
+		add(arrow4);
 
 		camFront.follow(selectSave, LOCKON, 40);
 		changeSelection();
@@ -112,44 +112,47 @@ class SaveSelect extends StateManager {
 
 		var member = cast saveGroup.members[curSelected];
 		if (member == null) {
-			#if debug trace("[changeSelection] Returned: member is null!"); #end
+			trace("[WARNING] member is null!");
 			return;
 		}
 
-		selectSave.setPosition    (member?.x,	   member?.y);
-		selectUpChar.setPosition  (selectUpZone.x, member?.y + 65);
-		selectDownChar.setPosition(selectUpChar.x, selectUpChar.y + 30);
-		selectUpZone.setPosition  (member?.x + 35,  member?.y + 14);
-		selectDownZone.setPosition(selectUpZone.x, selectUpZone.y + 18);
+		selectSave.setPosition	(member.x,	member.y);
+		arrow1.setPosition		(member.x,	member.y + 14);
+		arrow2.setPosition		(arrow1.x,	arrow1.y + 18);
+		arrow3.setPosition		(arrow2.x,	member.y + 65);
+		arrow4.setPosition		(arrow3.x,	arrow3.y + 30);
 
 		CoolUtil.playSound("MenuChange");
 	}
 }
 
+
+@:nullSafety(Loose)
 class SaveEntry extends FlxSpriteGroup {
-	public var character:Character = null;
-	public var emeralds:Array<FlxSprite> = new Array<FlxSprite>();
+	public var character:Null<Character>;
+	public var emeralds:Array<AsthgSprite> = new Array<AsthgSprite>();
 	public function new(id:Int) {
 		super();
 
-		var save:AsthgSprite = AsthgSprite.create("saveSelect/save");
+		var save:AsthgSprite = AsthgSprite.create(0, 0, "saveSelect/save");
 		add(save);
 
 		var colors:Array<Array<FlxColor>> = [
 			[0xff0080e0, 0xff00b4cc, 0xff00c0e0, 0xff80e0e0],
 			[0xffff0000, 0xffda0000, 0xffae0000, 0xff790000],
+			[0xff2bff00, 0xffda0000, 0xffae0000, 0xff790000],
+			[0xfffbff00, 0xffda0000, 0xffae0000, 0xff790000],
+			[0xffd4d4d4, 0xffda0000, 0xffae0000, 0xff790000],
 			[0xffff0000, 0xffda0000, 0xffae0000, 0xff790000],
 			[0xffff0000, 0xffda0000, 0xffae0000, 0xff790000],
-			[0xffff0000, 0xffda0000, 0xffae0000, 0xff790000],
-			[0xffff0000, 0xffda0000, 0xffae0000, 0xff790000],
-			[0xffff0000, 0xffda0000, 0xffae0000, 0xff790000],
+			[0xffff00d4, 0xffda0000, 0xffae0000, 0xff790000],
 		];
 
 		for (i in 0...7) {
 			var emerald:AsthgSprite = AsthgSprite.create(2, save.height - 12, "saveSelect/emerald");
 			emerald.x += (emerald.width * i) + i;
 			add(emerald);
-			emerald.applyPalette([colors[i][0], colors[i][1], colors[i][2], colors[i][3]]);
+			emerald.applyPalette(colors[i]);
 			emeralds.push(emerald);
 		}
 	}

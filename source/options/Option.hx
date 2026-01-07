@@ -11,7 +11,7 @@ class Option {
 	public var value(get, set):Dynamic;
 	public var defaultV:Null<Dynamic>;
 	
-	public var child:FlxText;
+	public var child:AsthgText;
 	public var text(get, set):Null<String>;
 
 	inline public function new(flag:String = "", saveVar:String = "", ?type:OptionType = OptionType.BOOL, ?options:Dynamic) {
@@ -26,16 +26,16 @@ class Option {
 
 		switch (type) {
 			case OptionType.BOOL:
-				if (defaultV == null) defaultV = false;
+				defaultV ??= false;
 			case OptionType.FLOAT:
 				this.options = {min: 0.0, max: 10.0, amount: 0.5, display: "%v"};
-				if (defaultV == null) defaultV = 0.0;
+				defaultV ??= 0.0;
 			case OptionType.INT:
 				this.options = {min: 0, max: 10, amount: 1, display: "%v"};
-				if (defaultV == null) defaultV = 0;
+				defaultV ??= 0;
 			case OptionType.STRING:
 				this.options = {list: ["No Options"], display: "%v"};
-				if (defaultV == null) defaultV = options?.list[0];
+				defaultV ??= options?.list[0];
 		}
 	}
 

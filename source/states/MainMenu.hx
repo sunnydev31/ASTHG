@@ -24,7 +24,7 @@ class MainMenu extends StateManager {
 		DiscordClient.changePresence(Locale.getString('main_menu', 'discord'), null);
 		#end
 
-		var bg:FlxSprite = AsthgSprite.createGradient(FlxG.width, FlxG.height, [0xFF793BFF, 0xFF95EDFF], 4, 32, false);
+		var bg:flixel.FlxSprite = AsthgSprite.createGradient(FlxG.width, FlxG.height, [0xFF793BFF, 0xFF95EDFF], 4, 32, false);
 		add(bg);
 
 		var bgLayer:AsthgSprite = new AsthgSprite().createGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
@@ -34,7 +34,7 @@ class MainMenu extends StateManager {
 		var backd:FlxBackdrop = new FlxBackdrop(Paths.image("UI/backdropX"), X);
 		backd.y = 15;
 		backd.flipY = true;
-		backd.color = 0xFFf0f000;
+		backd.color = SystemUtil.getAccentColor();
 		backd.velocity.set(-30, 0);
 		add(backd);
 		
@@ -47,7 +47,7 @@ class MainMenu extends StateManager {
 		add(titleSpr);
 		FlxScrollingText.startScrolling(titleSpr);
 
-		var version:FlxBitmapText = new FlxBitmapText(0, 0, "v" + CoolUtil.getProjectInfo('version'), FlxBitmapFont.fromMonospace(Paths.getFolderPath("AbsoluteSystem.png", "fonts"), Constants.ABSOLUTE_FONT_GLYPHDATA, FlxPoint.get(8, 8)));
+		var version:FlxBitmapText = new FlxBitmapText(0, 0, "v" + CoolUtil.getProjectInfo('version'), FlxBitmapFont.fromMonospace(Paths.getFolderPath("AbsoluteSystem.png", "fonts"), Constants.ABSOLUTE_FONT_GLYPHDATA, flixel.math.FlxPoint.get(8, 8)));
 		if (!StringUtil.isNull(CoolUtil.getProjectInfo("buildNumber"))) {
 			version.text += " " + CoolUtil.getProjectInfo("buildNumber");
 		}
@@ -97,7 +97,7 @@ class MainMenu extends StateManager {
 						});
 					}
 					else {
-						FlxFlicker.flicker(txt, 1, (!ClientPrefs.data.flashing) ? 0.3: 0.06, false, false, function(flick:FlxFlicker) {
+						FlxFlicker.flicker(txt, 1, (!ClientPrefs.data.flashing) ? 0.3 : 0.06, false, false, function(flick:FlxFlicker) {
 							var daChoice:String = options[curSelected];
 
 							switch (daChoice.toLowerCase()) {

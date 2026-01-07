@@ -3,8 +3,8 @@ package backend;
 class CustomFadeTransition extends SubStateManager {
 	public static var finishCallback:Void->Void;
 	var isTransIn:Bool = false;
-	var transBlack:FlxSprite;
-	var transGradient:FlxSprite;
+	var transBlack:flixel.FlxSprite;
+	var transGradient:flixel.FlxSprite;
 
 	var duration:Float;
 	public function new(duration:Float, isTransIn:Bool)

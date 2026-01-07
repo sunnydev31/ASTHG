@@ -20,7 +20,7 @@ class OptionsState extends StateManager {
 	public static var onPlayState:Bool = false;
 
 	override function create() {
-		var bg:FlxSprite = AsthgSprite.createGradient(FlxG.width, FlxG.height, [0x4FFFFFFF, 0x28FFFFFF], 2, 37, false);
+		var bg:flixel.FlxSprite = AsthgSprite.createGradient(FlxG.width, FlxG.height, [0x4FFFFFFF, 0x28FFFFFF], 2, 37, false);
 		add(bg);
 
 		// tabs group

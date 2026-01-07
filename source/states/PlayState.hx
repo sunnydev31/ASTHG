@@ -7,11 +7,16 @@ class PlayState extends StateManager {
 	public static var instance:PlayState;
 
 	public var score:Int = 10;
-	public var time:String = "0:00";
-	public var rings:Int = 0;
-	public var lives:Int = 3;
+	var time:String = "0:00";
+	var rings:Int = 0;
+	var lives:Int = 3;
+	
+	var scoreTxt:FlxBitmapText;
+	var timeTxt:FlxBitmapText;
+	var ringsTxt:FlxBitmapText;
+	var livesTxt:FlxBitmapText;
 
-	public var hudPos:FlxPoint;
+	public var hudPos:flixel.math.FlxPoint;
 
 	public var camGame:FlxCamera;
 	public var camFront:FlxCamera;
@@ -19,10 +24,6 @@ class PlayState extends StateManager {
 
 	public var uiGroup:FlxSpriteGroup;
 
-	var scoreTxt:FlxBitmapText;
-	var timeTxt:FlxBitmapText;
-	var ringsTxt:FlxBitmapText;
-	var livesTxt:FlxBitmapText;
 	#if debug
 	var posXTxt:FlxBitmapText;
 	var posYTxt:FlxBitmapText;
@@ -37,7 +38,7 @@ class PlayState extends StateManager {
 
 		player = new Character(50, 50, Character.defaultPlayer);
 
-		hudPos = new FlxPoint(8,10);
+		hudPos = new flixel.math.FlxPoint(8,10);
 
 		#if DISCORD_ALLOWED
 		DiscordClient.changePresence(Locale.getString('playing', "discord"), Locale.getString("playing-player", "discord", [player.json.name]), "icon", "", player.json.name.toLowerCase(), player.json.name);
@@ -102,10 +103,10 @@ class PlayState extends StateManager {
 		livesIcon = new LifeIcon(player.lifeIcon);
 		livesIcon.setPosition(hudPos.x, FlxG.height - 26);
 		livesIcon.applyPalette([
-			FlxColor.fromString(player.json.palettes[player.curPalette][0]),
-			FlxColor.fromString(player.json.palettes[player.curPalette][1]),
-			FlxColor.fromString(player.json.palettes[player.curPalette][2]),
-			FlxColor.fromString(player.json.palettes[player.curPalette][3])
+			FlxColor.fromString(player.json?.palettes[player.curPalette][0]),
+			FlxColor.fromString(player.json?.palettes[player.curPalette][1]),
+			FlxColor.fromString(player.json?.palettes[player.curPalette][2]),
+			FlxColor.fromString(player.json?.palettes[player.curPalette][3])
 		]);
 		uiGroup.add(livesIcon);
 		
@@ -114,14 +115,14 @@ class PlayState extends StateManager {
 		uiGroup.add(livesTxt);
 
 		#if debug
-		var posX:FlxSprite = new FlxSprite(FlxG.width - 60, hudPos.y).loadGraphic(Paths.image("HUD/posX"));
+		var posX:AsthgSprite = AsthgSprite.create(FlxG.width - 60, hudPos.y, "HUD/posX");
 		posX.color = (player.x >= 0xFFFF) ? 0xFFFF0000 :  0xFFFFFF00;
 		uiGroup.add(posX);
 
 		posXTxt = new FlxBitmapText(posX.x + posX.width + 1, posX.y, '', Paths.getAngelCodeFont("HUD"));
 		uiGroup.add(posXTxt);
 
-		var posY:FlxSprite = new FlxSprite(posX.x, hudPos.y + 13).loadGraphic(Paths.image("HUD/posY"));
+		var posY:AsthgSprite = AsthgSprite.create(posX.x, hudPos.y + 13, "HUD/posY");
 		posY.color = (player.y >= 0xFFFF) ? 0xFFFF0000 : 0xFFFFFF00;
 		uiGroup.add(posY);
 		
@@ -136,7 +137,7 @@ class PlayState extends StateManager {
 		rings = Std.int(FlxMath.wrap(rings, 0, 999));
 		lives = Std.int(FlxMath.wrap(lives, 0, 99));
 
-		scoreTxt.text = Std.string(score * 10);
+		scoreTxt.text = Std.string(score);
 		timeTxt.text = Std.string(time);
 		ringsTxt.text = Std.string(rings);
 		livesTxt.text = Std.string(lives);

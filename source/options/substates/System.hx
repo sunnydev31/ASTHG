@@ -6,9 +6,7 @@
 
 package options.substates;
 
-import options.Option;
-
-class System extends options.OptionsSubState {
+class System extends OptionsSubState {
 	public function new() {
 		var opt:Option;
 

@@ -1,0 +1,38 @@
+**********************
+PowerShell transcript start
+Start time: 20260105192431
+Username: DESKTOP-L19LCBV\Sunky
+RunAs User: DESKTOP-L19LCBV\Sunky
+Configuration Name: 
+Machine: DESKTOP-L19LCBV (Microsoft Windows NT 10.0.19045.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll C:\Users\Sunky\source\ASTHG\_project\build\setup.ps1
+Process ID: 9532
+PSVersion: 7.5.4
+PSEdition: Core
+GitCommitId: 7.5.4
+OS: Microsoft Windows 10.0.19045
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+Transcript started, output file is C:\Users\Sunky\source\ASTHG\_project\build/setup.log
+===== ASTHG Setup =====
+0. Install default dependencies
+1. Setup for Windows
+2. Setup for MacOS
+3. Setup for Android
+4. Remove setup files
+5. Exit
+
+Installing dependencies.
+
+
+
+
+Finished.
+**********************
+PowerShell transcript end
+End time: 20260105193721
+**********************

@@ -76,7 +76,7 @@ class CoolUtil
 
 		var musJson:Dynamic = null;
 		if (Paths.fileExists('music/$sound.json', TEXT))
-			musJson = Paths.parseJson('music/$sound');
+			musJson = Paths.parseJson('music/$sound.json');
 		else {
 			trace('[playMusic] No metadata found for music "$sound".');
 			musJson = {

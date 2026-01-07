@@ -13,10 +13,10 @@ class OptionsSubState extends SubStateManager {
 	var selected:Int = 0;
 	var options:Array<Option>;
 	
-	var grpOptions:FlxTypedGroup<FlxText>;
-	var grpValues:FlxTypedGroup<FlxText>;
+	var grpOptions:FlxTypedGroup<AsthgText>;
+	var grpValues:FlxTypedGroup<AsthgText>;
 
-	var txtDesc:FlxText;
+	var txtDesc:AsthgText;
 	var sprDesc:AsthgSprite;
 
 	public function new() {
@@ -25,10 +25,10 @@ class OptionsSubState extends SubStateManager {
 		bg.alpha = 0.6;
 		add(bg);
 		
-		grpOptions = new FlxTypedGroup<FlxText>();
+		grpOptions = new FlxTypedGroup<AsthgText>();
 		add(grpOptions);
 
-		grpValues = new FlxTypedGroup<FlxText>();
+		grpValues = new FlxTypedGroup<AsthgText>();
 		add(grpValues);
 
 		for (i in 0...options.length) {

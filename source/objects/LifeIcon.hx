@@ -14,6 +14,7 @@ class LifeIcon extends AsthgSprite {
 		charObj = states.PlayState.instance?.player;
 
 		init(char);
+		animation.play("normal");
 
 		scrollFactor.set();
 	}
@@ -43,15 +44,18 @@ class LifeIcon extends AsthgSprite {
 		var graphic = Paths.image(img);
 
 		loadGraphic(graphic, true, charObj.json.hasSuper ? Math.floor(graphic.width/2) : Math.floor(graphic.width), Math.floor(graphic.height));
-		animation.add(char, [for (i in 0...frames.frames.length) i], 0, false, false);
-		animation.play(char);
+		animation.add("normal", [0], 0, false, false);
+		animation.add("super" , [1], 0, false, false);
 
 		if (graphic.width > 17 && graphic.height > 17) { // Sonic CD styled
-			this.scaleGraphicSize(17, 17);
+			this.scaleSet(17, 17);
 		}
 	}
 
 	override function update(e:Float) {
 		super.update(e);
+
+		if (states.PlayState.instance != null)
+			(charObj?.isSuper) ? animation.play("super") : animation.play("normal");
 	}
 }

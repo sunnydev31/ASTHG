@@ -72,12 +72,10 @@ class StateManager extends FlxState
 
 	// Custom made Trans in
 	public static function startTransition(nextState:FlxState = null) {
-		if(nextState == null)
-			nextState = FlxG.state;
+		nextState ??= FlxG.state;
 
 		FlxG.state.openSubState(new CustomFadeTransition(0.5, false));
-		if(nextState == FlxG.state)
-			CustomFadeTransition.finishCallback = function() FlxG.resetState();
+		if(nextState == FlxG.state) CustomFadeTransition.finishCallback = function() FlxG.resetState();
 		else
 			CustomFadeTransition.finishCallback = function() {
 				#if (flixel < "6.1.0")

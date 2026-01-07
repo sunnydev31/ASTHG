@@ -273,12 +273,6 @@ class Paths
 		@return Dynamic
 	**/
 	public static function parseJson(path:String):Dynamic {
-		#if tjson
-		trace('[parseJson] Path: $path.json | Using TJSON.');
-		return tjson.TJSON.parse(getContent('$path.json'));
-		#else
-		trace('[parseJson] Path: $path.json | Using "haxe.Json".');
-		return haxe.Json.parse(getContent('$path.json'));
-		#end
+		return haxe.Json.parse(getContent(path));
 	}
 }

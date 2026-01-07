@@ -10,15 +10,18 @@ import firetongue.FireTongue;
 import openfl.utils.Assets;
 
 class Language extends SubStateManager {
-	#if TRANSLATIONS_ALLOWED
-	var grpLanguages:FlxTypedGroup<FlxText> = new FlxTypedGroup<FlxText>();
+	#if (TRANSLATIONS_ALLOWED && target.unicode)
+	/*
+		^^ we need to be shure that Unicode are supported, or
+		translations will be weird as hell ^^
+	*/
+	var grpLanguages:FlxTypedGroup<AsthgText> = new FlxTypedGroup<AsthgText>();
 	var languages:Array<String> = [];
 	var curSelected:Int = 0;
 	public function new() {
 		super();
 
-		var bg = new FlxSprite().makeGraphic(1, 1, 0x50000000);
-		bg.scale.set(FlxG.width, FlxG.height);
+		var bg = new AsthgSprite().createGraphic(FlxG.width, FlxG.height, 0x50000000);
 		bg.screenCenter();
 		add(bg);
 		add(grpLanguages);
@@ -30,9 +33,9 @@ class Language extends SubStateManager {
 			var text:AsthgText = AsthgText.create(0, 300, LangRegionNative);
 			text.format(16, "center", FlxColor.WHITE);
 			text.ID = num;
-			if (languages.length < 7) {
+			if (languages?.length < 7) {
 				text.screenCenter(Y);
-				text.y += (20 * (num - (languages.length / 2))) + text.size;
+				text.y += (20 * (num - (languages?.length / 2))) + text?.size;
 			}
 			text.screenCenter(X);
 			grpLanguages.add(text);

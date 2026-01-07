@@ -35,6 +35,11 @@ class Init extends StateManager {
 			Controls.instance.controllerMode = true;
 		}
 
+		#if debug 
+		// DEBUGING PURPOSES ONLY
 		StateManager.switchState(new options.OptionsState());
+		#else
+		StateManager.switchState(new options.OptionsState());
+		#end
 	}
 }

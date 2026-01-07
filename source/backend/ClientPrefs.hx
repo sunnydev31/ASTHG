@@ -30,7 +30,7 @@ class ClientPrefs {
 	public static var data:SaveVariables = {};
 	public static var defaultData:SaveVariables = {};
 
-public static var keyBinds:Map<String, Array<FlxKey>> = [
+	public static var keyBinds:Map<String, Array<FlxKey>> = [
 		'up'			=> [UP],
 		'left'			=> [LEFT],
 		'down'			=> [DOWN],
@@ -46,6 +46,7 @@ public static var keyBinds:Map<String, Array<FlxKey>> = [
 		'volume_up'		=> [NUMPADPLUS],
 		'volume_down'	=> [NUMPADMINUS],
 	];
+	
 	public static var gamepadBinds:Map<String, Array<FlxGamepadInputID>> = [		
 		'up'			=> [DPAD_UP],
 		'left'			=> [DPAD_LEFT],
@@ -125,13 +126,11 @@ public static var keyBinds:Map<String, Array<FlxKey>> = [
 		}
 		#end
 
-		if(data.framerate > FlxG.drawFramerate)
-		{
+		if(data.framerate > FlxG.drawFramerate) {
 			FlxG.updateFramerate = data.framerate;
 			FlxG.drawFramerate = data.framerate;
 		}
-		else
-		{
+		else {
 			FlxG.drawFramerate = data.framerate;
 			FlxG.updateFramerate = data.framerate;
 		}
@@ -147,14 +146,12 @@ public static var keyBinds:Map<String, Array<FlxKey>> = [
 		// controls on a separate save file
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v3', CoolUtil.getSavePath());
-		if(save?.data.keyboard != null)
-		{
+		if(save?.data.keyboard != null) {
 			var loadedControls:Map<String, Array<FlxKey>> = save.data.keyboard;
 			for (control => keys in loadedControls)
 				if(keyBinds.exists(control)) keyBinds.set(control, keys);
 		}
-		if(save?.data.gamepad != null)
-		{
+		if(save?.data.gamepad != null) {
 			var loadedControls:Map<String, Array<FlxGamepadInputID>> = save.data.gamepad;
 			for (control => keys in loadedControls)
 				if(gamepadBinds.exists(control)) gamepadBinds.set(control, keys);

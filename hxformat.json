@@ -14,9 +14,9 @@
 	},
 
 	"sameLine": {
-		"ifElse": "next",
-		"doWhile": "next",
-		"tryBody": "next",
-		"tryCatch": "next"
+		"ifElse": "same",
+		"doWhile": "same",
+		"tryBody": "same",
+		"tryCatch": "same"
 	}
 }

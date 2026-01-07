@@ -47,10 +47,10 @@ class Character extends AsthgSprite {
 
 	public function changeChar(char:String) {
 		if (Paths.fileExists('data/characters/$char.json', TEXT)) {
-			json = cast Paths.parseJson('data/characters/$char');
+			json = cast Paths.parseJson('data/characters/$char.json');
 		}
 		else {
-			json = cast Paths.parseJson('data/characters/$defaultPlayer');
+			json = cast Paths.parseJson('data/characters/$defaultPlayer.json');
 			trace('Character not found, using default ($defaultPlayer)');
 		}
 
@@ -70,10 +70,10 @@ class Character extends AsthgSprite {
 		var anims = json.animations;
 		if(anims?.length > 0) {
 			for (anim in anims) {
-				if(anim.indices?.length > 0)
-					animation.addByIndices(Std.string(anim.name), Reflect.field(anim, "prefix") ?? anim.name, anim.indices, "", anim.fps, anim.loop);
+				if(anim?.indices?.length > 0)
+					animation.addByIndices(anim.name, anim.prefix ?? anim.name, anim.indices, "", anim.fps ?? 30, anim.loop ?? false);
 				else
-					animation.addByPrefix(Std.string(anim.name), Reflect.field(anim, "prefix") ?? anim.name, anim.fps, anim.loop);
+					animation.addByPrefix(anim.name, anim.prefix ?? anim.name, anim.fps ?? 30, anim.loop ?? false);
 			}
 		}
 	}
@@ -91,10 +91,10 @@ class Character extends AsthgSprite {
 		Reflect.setField(exAnim, name, name);
 	}
 
-	public function animExists(name:AnimList):Bool {
-		if (Reflect.hasField(exAnim, name)){
-			var nameN:String = Std.string(Reflect.field(exAnim, name));
-        	return (!StringUtil.isNull(nameN) && animation.getByName(nameN) != null);
+	public function animExists(name:String):Bool {
+		if (Reflect.hasField(exAnim, name) || name != null){
+			var nameN:String = Std.string(Reflect.field(exAnim, name) ?? name);
+			return (!StringUtil.isNull(nameN) && animation.getByName(nameN) != null);
 		}
 		
 		trace('[WARNING] Animation "$name" doesn\'t exists in the list!');
@@ -169,7 +169,7 @@ typedef CharacterData = {
 	
 	use `addAnim()` if you want to add a new one	
 **/
-enum abstract AnimList(String) {
+enum abstract AnimList(String) from String to String {
 	var ANI_STOPPED			= "ANI_STOPPED";
 	var ANI_WAITING			= "ANI_WAITING";
 	var ANI_BORED			= "ANI_BORED";
@@ -202,7 +202,4 @@ enum abstract AnimList(String) {
 	var ANI_SUPER_TRANSFORM	= "ANI_SUPER_TRANSFORM";
 	var ANI_CD_TWIRL		= "ANI_CD_TWIRL";
 	var ANI_HANG_MOVE		= "ANI_HANG_MOVE";
-
-	@:from static function fromString(s:String):AnimList return cast s;
-	@:to public function toString():String return (this : String);
 }
