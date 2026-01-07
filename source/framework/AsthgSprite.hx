@@ -10,6 +10,7 @@ import flixel.FlxSprite;
 import flixel.addons.display.FlxSliceSprite;
 import flixel.graphics.FlxGraphic;
 import flixel.math.FlxRect;
+import flixel.math.FlxPoint;
 
 /**
 	Custom instance for FlxSprite with better functions
@@ -22,15 +23,20 @@ import flixel.math.FlxRect;
 **/
 class AsthgSprite extends FlxSprite {
 
-	public function new(?x:Float = 0.0, ?y:Float = 0.0) {
+	public function new(?x:Float = 0, ?y:Float = 0.0, ?image:Null<String>) {
 		super(x, y);
 	}
 
-	public static function create(x:Float = 0.0, y:Float = 0.0, image:String = null):AsthgSprite {
-		var spr:AsthgSprite = new AsthgSprite(x, y);
+	/**
+		Creates a simple sprite
+		@param pos Position of the sprite
+		@param image The image to load
+		@return AsthgSprite
+	**/
+	public static function create(x:Float = 0, y:Float = 0, image:Null<String>):AsthgSprite {
+		var spr:AsthgSprite;
 
-		if (!StringUtil.isNull(image))
-			spr.loadGraphic(Paths.image(image));
+		if (!StringUtil.isNull(image)) spr.loadGraphic(x, y, Paths.image(image));
 		else {
 			trace("[create] 'image' argument is null!");
 			spr.loadGraphic(flixel.system.FlxAssets.getBitmapData("flixel/images/logo/default"));
@@ -39,11 +45,11 @@ class AsthgSprite extends FlxSprite {
 		return spr;
 	}
 
-	public static function createSpriteSheet(x:Float = 0.0, y:Float = 0.0, image:String = null):AsthgSprite {
+	public static function createSpriteSheet(x:Float = 0, y:Float = 0, fWidth:Int, fHeight:Int, image:Null<String>):AsthgSprite {
 		var spr:AsthgSprite = new AsthgSprite(x, y);
 
 		if (!StringUtil.isNull(image))
-			spr.loadGraphic(Paths.image(image), );
+			spr.loadGraphic(Paths.image(image), true, fWidth, fHeight);
 		else {
 			trace("[create] 'image' argument is null!");
 			spr.loadGraphic(flixel.system.FlxAssets.getBitmapData("flixel/images/logo/default"));
@@ -59,7 +65,7 @@ class AsthgSprite extends FlxSprite {
 		@param image Image name
 		@return AsthgSprite
 	**/
-	public static function createSparrow(x:Float = 0.0, y:Float = 0.0, image:String = null):AsthgSprite {
+	public static function createSparrow(x:Float = 0, y:Float = 0, image:String = null):AsthgSprite {
 		var spr:AsthgSprite = new AsthgSprite(x, y);
 
 		if (!StringUtil.isNull(image)) {
@@ -80,7 +86,7 @@ class AsthgSprite extends FlxSprite {
 		return spr;
 	}
 
-	public function createGraphic(x:Float = 0.0, y:Float = 0.0, width:Float = 1.0, height:Float = 1.0, color:FlxColor = FlxColor.WHITE):AsthgSprite {
+	public function createGraphic(x:Float = 0, y:Float = 0, width:Float = 1, height:Float = 1, color:FlxColor = FlxColor.WHITE):AsthgSprite {
 		var graph:FlxGraphic = FlxG.bitmap.create(2, 2, color, false, 'graphic($x,$y,$width,$height)');
 		frames = graph.imageFrame;
 		scale.set(width / 2, height / 2);
@@ -115,9 +121,49 @@ class AsthgSprite extends FlxSprite {
 		if (updHitbox) updateHitbox();
 	}
 
-	public function scaleGraphicSize(width:Float, height:Float, ?updHitbox:Bool = true):Void {
-		setGraphicSize(width, height);
-		if (updHitbox) updateHitbox();
+	/**
+		Creates a 9-Sliced Sprite
+		@param x Horizontal position.
+		@param y Vertical position.
+		@param width Width of the final sprite.
+		@param height Height of the final sprite.
+		@param graphic Graphic to use.
+		@param dimensions Slice rect positions
+		@return AsthgSprite
+	**/
+	public function create9Slice(x:Float, y:Float, width:Float, height:Float, graphic:String, dimensions:Array<FlxRect>):AsthgSprite {
+		var spr:AsthgSprite = create(x, y, graphic);
+		var topL = dimensions[0]; var topC = dimensions[1]; var topR = dimensions[2]; // Top
+		var midL = dimensions[3]; var midC = dimensions[4]; var midR = dimensions[5]; // Center
+		var botL = dimensions[6]; var botC = dimensions[7]; var botR = dimensions[8]; // Bottom
+
+		topC.x += topL.width;
+		topR.x += topC.x + topC.width;
+
+		midC.x += midL.width;
+		midR.x += midC.x + midC.width;
+
+		botC.x += botL.width;
+		botR.x += botC.x + botC.width;
+
+		midR.y = midC.y = midL.y = topL.y + topL.height + 1;
+		botR.y = botC.y = botL.y = midL.y + midL.height + 1;
+		
+		for (i in 0...9) {
+			spr.frame = dimensions[i];
+		}
+
+		return spr;
 	}
 
+	/**
+		Custom function that returns a FlxPoint!
+		to not depend on Flixel functions
+		@param x Value 1
+		@param y Value 2
+		@return FlxPoint
+	**/
+	inline public static function vec2(x:Float, y:Float):FlxPoint {
+		return new FlxPoint(x, y);
+	}
 }
